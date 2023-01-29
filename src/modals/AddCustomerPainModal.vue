@@ -45,6 +45,6 @@ export default {
     <p><strong>How</strong> does this pain feel?</p>
     <p><strong>When</strong> does the pain occur?</p>
     <p><strong>How</strong> and <strong>why</strong> does the pain occur?</p>
-    <b-form-textarea placeholder="..." v-model="description"></b-form-textarea>
+    <b-form-textarea placeholder="" v-model="description"></b-form-textarea>
   </b-modal>
 </template>
