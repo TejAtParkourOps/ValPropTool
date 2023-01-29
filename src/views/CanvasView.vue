@@ -480,11 +480,10 @@ import { timeout } from 'd3';
         this.Messages = data.Messages;
       },
       reset() {
-        this.$bvModal.msgBoxConfirm("Are you sure you want to reset your canvas?", {okTitle: "Yes", cancelTitle: "No"})
+        this.$bvModal.msgBoxConfirm("Are you sure you want to clear this canvas?", {okTitle: "Yes", cancelTitle: "No"})
           .then((val) => {
             if (val === true) {
               localStorage.removeItem("tmpSaved");
-              // this.Name = "Untitled Project";
               this.IdealCustomerProfiles = [];
               this.CustomerJobs = [];
               this.Pains = [];

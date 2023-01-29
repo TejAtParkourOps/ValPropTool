@@ -29,9 +29,12 @@
 
 <template>
     <b-modal ref="modal" no-close-on-backdrop title="Add Ideal Customer Profile" @ok="emit" :ok-disabled="description.length < 1">
+      <p>
+        <strong>Who</strong> is your ideal customer? <strong>Where</strong> can they be found?
+      </p>
       <b-form-textarea
-      placeholder="..."
-      v-model="description"
+        placeholder=""
+        v-model="description"
       ></b-form-textarea>
     </b-modal>
 </template>

@@ -1,17 +1,23 @@
 <template>
     <b-modal ref="modal" no-close-on-backdrop title="Pain Reliever" @ok="emit" :ok-disabled="description.length < 1 || relatesTo.length < 1">
-        <multiselect v-model="relatesTo" :options="customerPains" class="mb-2" multiple track-by="description" placeholder="" :custom-label="(o)=>o.description" hideSelected>
+        <p>
+            <strong>What</strong> pain(s) does this feature relieve?
+        </p>
+        <multiselect v-model="relatesTo" :options="customerPains" class="mb-4" multiple track-by="description" placeholder="" :custom-label="(o)=>o.description" hideSelected>
             <template slot="option" slot-scope="{ option }">
                 {{ option.description }}
             </template>
-            <!-- <template slot="tag" slot-scope="{ option, remove }">
-                {{ option.description }}
-                <a href="#" @click="()=>remove()">Delete</a>
-            </template> -->
         </multiselect>
+
+        <p>
+            <strong>What</strong> does this feature do to relieve the {{ relatesTo.length > 1 ? 'pains' : 'pain' }}?
+        </p>
+        <p>
+            <strong>How</strong> does this feature relieve the {{ relatesTo.length > 1 ? 'pains' : 'pain' }}?
+        </p>
         <b-form-textarea
-        placeholder="..."
-        v-model="description"
+            placeholder=""
+            v-model="description"
         ></b-form-textarea>
     </b-modal>
 </template>

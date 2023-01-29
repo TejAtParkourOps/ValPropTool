@@ -32,10 +32,13 @@
 
 <template>
     <b-modal ref="modal" no-close-on-backdrop title="Add Product or Service" @ok="emit" :ok-disabled="description.length < 1">
-        <b-form-select v-model="type" :options="typeOptions" class="mb-2" />
+        <b-form-select v-model="type" :options="typeOptions" class="mb-4" />
+        <p>
+            <strong>What</strong> is this {{ type.toLowerCase() }} called?
+        </p>
         <b-form-textarea
-        placeholder="..."
-        v-model="description"
+            placeholder=""
+            v-model="description"
         ></b-form-textarea>
     </b-modal>
 </template>

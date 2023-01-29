@@ -31,10 +31,22 @@
 </script>
 
 <template>
-    <b-modal ref="modal" no-close-on-backdrop title="Customer Gain" @ok="emit" :ok-disabled="description.length < 1">
+    <b-modal ref="modal" no-close-on-backdrop title="Add Customer Gain" @ok="emit" :ok-disabled="description.length < 1">
+        <p>
+        <strong>What</strong> gain does the job produce for the customer? 
+    </p>
+    <p>
+        <strong>How</strong> does this gain feel?
+    </p>
+    <p>
+        <strong>When</strong> does the gain occur?
+    </p>
+    <p>
+        <strong>How</strong> and <strong>why</strong> does the gain occur?
+    </p>
       <b-form-textarea
-      placeholder="..."
-      v-model="description"
+        placeholder=""
+        v-model="description"
       ></b-form-textarea>
     </b-modal>
 </template>

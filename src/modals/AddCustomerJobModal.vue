@@ -31,10 +31,13 @@
 </script>
 
 <template>
-      <b-modal ref="modal" no-close-on-backdrop title="Customer Job" @ok="emit" :ok-disabled="description.length < 1">
+      <b-modal ref="modal" no-close-on-backdrop title="Add Customer Job" @ok="emit" :ok-disabled="description.length < 1">
+        <p>
+            <strong>What</strong> job does the ideal customer do? <strong>How</strong> do they do it?
+        </p>
         <b-form-textarea
-        placeholder="As a customer, I..."
-        v-model="description"
+            placeholder=""
+            v-model="description"
         ></b-form-textarea>
       </b-modal>
 </template>

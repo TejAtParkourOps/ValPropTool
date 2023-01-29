@@ -33,8 +33,8 @@
 <template>
     <b-modal ref="modal" no-close-on-backdrop title="Message" @ok="emit" :ok-disabled="description.length < 1">
       <b-form-textarea
-      placeholder="..."
-      v-model="description"
+        placeholder=""
+        v-model="description"
       ></b-form-textarea>
     </b-modal>
 </template>

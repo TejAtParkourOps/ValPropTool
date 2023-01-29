@@ -68,7 +68,7 @@ import Loading from '@/components/Loading.vue';
     beforeMount() {
         // if not signed in, redirect user to login
         if (!this.userInfoStore.isLoggedIn) {
-            this.$bvModal.msgBoxOk("Please sign in.")
+            this.$bvModal.msgBoxOk("Please sign in first.")
                 .then(() => {
                 this.$router.push({ name: "login" });
             });

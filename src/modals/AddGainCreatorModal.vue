@@ -1,17 +1,23 @@
 <template>
-    <b-modal ref="modal" no-close-on-backdrop title="Gain Creator" @ok="emit" :ok-disabled="description.length < 1 || relatesTo.length < 1">
-        <multiselect v-model="relatesTo" :options="customerGains" class="mb-2" multiple track-by="description" placeholder="" :custom-label="(o)=>o.description" hideSelected>
+    <b-modal ref="modal" no-close-on-backdrop title="Add Gain Creator" @ok="emit" :ok-disabled="description.length < 1 || relatesTo.length < 1">
+        <p>
+            <strong>What</strong> gains(s) does this feature produce?
+        </p>
+        <multiselect v-model="relatesTo" :options="customerGains" class="mb-4" multiple track-by="description" placeholder="" :custom-label="(o)=>o.description" hideSelected>
             <template slot="option" slot-scope="{ option }">
                 {{ option.description }}
             </template>
-            <!-- <template slot="tag" slot-scope="{ option, remove }">
-                {{ option.description }}
-                <a href="#" @click="()=>remove()">Delete</a>
-            </template> -->
         </multiselect>
+
+        <p>
+            <strong>What</strong> does this feature do to produce the {{ relatesTo.length > 1 ? 'gains' : 'gain' }}?
+        </p>
+        <p>
+            <strong>How</strong> does this feature produce the {{ relatesTo.length > 1 ? 'gains' : 'gain' }}?
+        </p>
         <b-form-textarea
-        placeholder="..."
-        v-model="description"
+            placeholder=""
+            v-model="description"
         ></b-form-textarea>
     </b-modal>
 </template>
