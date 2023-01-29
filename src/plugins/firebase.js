@@ -1,8 +1,31 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, set, onValue, child, get, onChildAdded, onChildChanged, onChildRemoved, update, remove, off } from "firebase/database";
-import { getAuth, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, signOut as _signOut, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult} from "firebase/auth";
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  child,
+  get,
+  onChildAdded,
+  onChildChanged,
+  onChildRemoved,
+  update,
+  remove,
+  off,
+} from "firebase/database";
+import {
+  getAuth,
+  isSignInWithEmailLink,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
+  signOut as _signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+} from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,7 +39,8 @@ const firebaseConfig = {
   messagingSenderId: "65125453176",
   appId: "1:65125453176:web:7cdd683313a536a1988c8d",
   measurementId: "G-7P78P9RRM8",
-  databaseURL: "https://valueproptool-default-rtdb.asia-southeast1.firebasedatabase.app"
+  databaseURL:
+    "https://valueproptool-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 
 // Initialize Firebase
@@ -24,16 +48,16 @@ const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const emailLinkSignIn = {
-    isSignInWithEmailLink,
-    sendSignInLinkToEmail,
-    signInWithEmailLink
-}
+  isSignInWithEmailLink,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
+};
 export const federatedSignIn = {
-    signInWithRedirect,
-    GoogleAuthProvider,
-    getRedirectResult,
-    signInWithPopup
-}
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult,
+  signInWithPopup,
+};
 export const signOut = _signOut;
 
 // DB
@@ -53,9 +77,12 @@ const readObj = async (path) => {
   }
 };
 
-export const addedToList = async (path, callback, cancelCallback) => onChildAdded(ref(db, path), callback, cancelCallback);
-export const removedFromList = async (path, callback, cancelCallback) => onChildRemoved(ref(db, path), callback, cancelCallback);
-export const changedInList = async (path, callback, cancelCallback) => onChildChanged(ref(db, path), callback, cancelCallback);
+export const addedToList = async (path, callback, cancelCallback) =>
+  onChildAdded(ref(db, path), callback, cancelCallback);
+export const removedFromList = async (path, callback, cancelCallback) =>
+  onChildRemoved(ref(db, path), callback, cancelCallback);
+export const changedInList = async (path, callback, cancelCallback) =>
+  onChildChanged(ref(db, path), callback, cancelCallback);
 export const unsubscribe = async (path) => off(ref(db, path));
 export const readItem = async (path) => get(ref(db, path));
 export const writeItem = async (path, data) => set(ref(db, path), data);
@@ -65,4 +92,3 @@ export const updateItem = async (path, val) => {
   updateSpec[path] = val;
   return update(ref(db), updateSpec);
 };
-
