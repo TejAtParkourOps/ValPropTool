@@ -2,7 +2,7 @@
     <div>
         <div class="p-5">
             <p class="text-center mb-4">
-                You are logged in as:<br/> <strong>{{ userInfoStore.userInfo.email }}</strong>
+                You are logged in as:<br/> <strong>{{ userInfoStore?.userInfo?.email }}</strong>
             </p>
             <b-button size="lg" class="d-block mx-auto" @click="logOut">Log Out</b-button>
         </div>

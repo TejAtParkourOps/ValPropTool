@@ -3,20 +3,23 @@
     <!-- Canvas Header -->
     <div class="d-flex flex-row p-4 justify-content-between">
       <div id="toolbar">
-        <b-button variant="primary" class="mr-1" @click="() => {$refs.AddIdealCustomerProfileModal.show()}">Add ICP</b-button>
-        <b-button variant="primary" class="mr-1" @click="() => $refs.AddProductOrServiceModal.show()">Add Product/Service</b-button>
+        <b-button variant="primary" class="mr-1" @click="() => {$refs.AddIdealCustomerProfileModal.show()}" :disabled="routePropositionId && !isOwner">Add ICP</b-button>
+        <b-button variant="primary" class="mr-1" @click="() => $refs.AddProductOrServiceModal.show()" :disabled="routePropositionId && !isOwner">Add Product/Service</b-button>
         <b-button variant="secondary" class="mr-1" @click="save" :disabled="nodes.length < 1" v-if="!routePropositionId">Save</b-button>
-        <div v-else v-b-tooltip.hover.bottom title="Auto-saving" class="d-inline-block">
+        <div v-else v-b-tooltip.hover.bottom :title="isOwner ? 'Auto-saving' : undefined" class="d-inline-block">
           <b-button variant="secondary" class="mr-1" disabled>Save</b-button>
         </div>
         <!-- <b-button variant="primary" class="mr-1" @click="share" :disabled="nodes.length < 1">Share</b-button> -->
-        <b-button variant="secondary" class="mr-1" @click="reset" :disabled="nodes.length < 1">Reset</b-button>
+        <b-button variant="secondary" class="mr-1" @click="reset" :disabled="nodes.length < 1 || !isOwner">Reset</b-button>
       </div>
       <div>
-        <h2 class="mr-1 cursor-pointer text-secondary project-name" @click="changeName">{{ Name }}</h2>
+        <h2 class="mr-1 mb-2 cursor-pointer text-secondary project-name" @click="changeName">{{ Name }}</h2>
+        <div class="d-flex flex-row justify-content-end">
+          <b-badge variant="secondary" href="#" @click="publish">{{ Published ? 'Published' : 'Unpublished' }}</b-badge>
+        </div>
       </div>
     </div>
-    <!-- Canvas -->
+    <!-- Canvas -->    
     <div id="canvas-wrapper">
       <svg id="canvas"></svg>
     </div>
@@ -27,13 +30,13 @@
         :header="this?.selectedItem?.type" 
       >
         <b-list-group flush style="pointer-events: auto">
-          <b-list-group-item href="#" @click="()=>{$refs.addCustomerJobModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Ideal Customer Profile'">Add Customer Job</b-list-group-item>
-          <b-list-group-item href="#" @click="()=>{$refs.AddCustomerPainModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Customer Job'">Add Pain</b-list-group-item>
-          <b-list-group-item href="#" @click="()=>{$refs.AddCustomerGainModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Customer Job'">Add Gain</b-list-group-item>
-          <b-list-group-item href="#" @click="()=>{$refs.AddPainRelieverModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'">Add Pain Reliever</b-list-group-item>
-      <b-list-group-item href="#" @click="()=>{$refs.AddGainCreatorModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'">Add Gain Creator</b-list-group-item>
-          <b-list-group-item href="#" @click="()=>{$refs.AddMessageModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Pain Reliever' || this?.selectedItem?.type === 'Gain Creator'">Add Message</b-list-group-item>
-          <b-list-group-item href="#" @click="()=>{deleteItem(selectedItem)}">Delete</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.addCustomerJobModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Ideal Customer Profile'" :disabled="routePropositionId && !isOwner">Add Customer Job</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddCustomerPainModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Customer Job'" :disabled="routePropositionId && !isOwner">Add Pain</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddCustomerGainModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Customer Job'" :disabled="routePropositionId && !isOwner">Add Gain</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddPainRelieverModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'" :disabled="routePropositionId && !isOwner">Add Pain Reliever</b-list-group-item>
+      <b-list-group-item href="#" @click="()=>{$refs.AddGainCreatorModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'" :disabled="routePropositionId && !isOwner">Add Gain Creator</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddMessageModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Pain Reliever' || this?.selectedItem?.type === 'Gain Creator'" :disabled="routePropositionId && !isOwner">Add Message</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{deleteItem(selectedItem)}" :disabled="routePropositionId && !isOwner">Delete</b-list-group-item>
         </b-list-group> 
       </b-card>
     </div>
@@ -103,6 +106,7 @@ import { timeout } from 'd3';
     data() {
         return {
             Name: "Untitled Project",
+            Published: false,
             IdealCustomerProfiles: [],
             CustomerJobs: [],
             Pains: [],
@@ -111,6 +115,7 @@ import { timeout } from 'd3';
             GainCreators: [],
             PainRelievers: [],
             Messages: [],
+            Owner: undefined,
             _graphContent: null,
             _simulation: null,
             _linkElements: null,
@@ -118,7 +123,7 @@ import { timeout } from 'd3';
             _iconElements: null,
             selectedItem: null,
             hoveredItem: null,
-            saved: false,
+            isLoading: true
         };
     },
     methods: {
@@ -155,6 +160,9 @@ import { timeout } from 'd3';
         this.selectedItem = null;
       },
       changeName() {
+        if (this.routePropositionId &&!this.isOwner) 
+          return;
+
         this.$refs.TextboxPromptModal.show("Rename Proposition", undefined, "My Awesome Value Prop", this.Name)
           .then((newName) => {
             this.Name = newName;
@@ -162,22 +170,34 @@ import { timeout } from 'd3';
           .catch(()=>{})
       },
       draw() {
+        if (this.isLoading) return;
+
         if (this._circleElements || this._iconElements || this._linkElements) {
           const s = d3.selectAll("svg#canvas g");
           s.remove();
         }
 
+        const links = objCopy(this.links);
+
         this._linkElements = this._graphContent
           .append('g')
           .selectAll('line')
-          .data(this.links)
+          .data(links)
           .join('line')
             .attr("pointer-events", "none")
             .attr('stroke-width', "7px")
             .attr('stroke', '#D4E9FF')
             .classed('pain-line', l => {
-              const source = this.nodes.find(n => n.id === l.source);
+              const source = this.nodes.find(n => n.id === l.source); 
+              // if (!source) {
+              //   console.log(`could not find: ${JSON.stringify(l.source)}`);
+              // }
               const target = this.nodes.find(n => n.id === l.target);
+              
+              // console.log(target)
+              // if (!target) {
+              //   console.log(`could not find: ${JSON.stringify(l.target)}`);
+              // }
               const sourceIsPainReliever = (source.type === 'Pain Reliever');
               const sourceIsMsg = (source.type === 'Message');
               const targetIsCustomerPain = (target.type === 'Customer Pain');
@@ -294,7 +314,7 @@ import { timeout } from 'd3';
 
         // https://www.d3indepth.com/force-layout/
         this._simulation = d3.forceSimulation(this.nodes)
-            .force("link", d3.forceLink().id(d => d.id).distance(150).links(this.links))
+            .force("link", d3.forceLink().id(d => d.id).distance(150).links(links))
             .force("charge", d3.forceManyBody().strength(100))
             .force("center", d3.forceCenter(window.innerWidth/2, window.innerHeight/2))
             .force("collision", d3.forceCollide().radius(60))
@@ -369,6 +389,7 @@ import { timeout } from 'd3';
             id,
             name: this.Name,
             owner: userId,
+            published: this.Published,
             data: {
               IdealCustomerProfiles: this.IdealCustomerProfiles,
               CustomerJobs: this.CustomerJobs,
@@ -387,7 +408,7 @@ import { timeout } from 'd3';
           }
           // (just incase if this was a previously not logged-in user) remove tmp data from local storage and redirect to doc link
           localStorage.removeItem("tmpSaved");
-          this.$router.push({name: "proposition", params: {id}})
+          this.$router.push({name: "proposition", params: {propositionId: id, ownerId: userId}})
             .catch(()=>{});
           // set saved to true
           this.saved = true;
@@ -395,10 +416,10 @@ import { timeout } from 'd3';
       },
       async load() {
         const propositionId = this.routePropositionId;
-        const userId = this.userInfoStore?.userInfo?.uid;
-        if (userId && propositionId) {
+        const ownerId = this.userInfoStore?.userInfo?.uid ?? this.routeOwnerId;
+        if (ownerId && propositionId) {
           // proposition has been requested from database
-          const snapshot = await readItem(`users/${userId}/propositions/${propositionId}`);
+          const snapshot = await readItem(`users/${ownerId}/propositions/${propositionId}`);
           if (!snapshot.exists()) {
             this.$bvModal.msgBoxOk("Request proposition could not be found.");
             this.$router.push({name:"create"});
@@ -406,6 +427,7 @@ import { timeout } from 'd3';
             const val = snapshot.val();
             console.debug(val);
             this.Name = val?.name ?? "Untitled Project";
+            this.Published = val?.published ?? false;
             this.IdealCustomerProfiles = val?.data?.IdealCustomerProfiles ?? [];
             this.CustomerJobs = val?.data?.CustomerJobs ?? [];
             this.Pains = val?.data?.Pains ?? [];
@@ -419,6 +441,7 @@ import { timeout } from 'd3';
           // proposition data may or may not be in tmp storage
           this.loadFromTmp();
         }
+        this.isLoading = false;
       },
       saveToTmp() {
         console.debug("Saving to tmp...");
@@ -474,19 +497,31 @@ import { timeout } from 'd3';
           }
         )
       },
-      async share() {
+      async publish() {
+        if (this.nodes.length < 1) return;
         if (!this.routePropositionId) {
-          this.$bvModal.msgBoxOk("Please save your proposition before publishing.");
+          await this.$bvModal.msgBoxOk("You must save your proposition before publishing.");
+          return;
         }
-        try {
-
-        } catch (error) {
-          console.debug(error);
-          this.$bvToast.toast("Failed to share proposition.");
+        if (!this.isOwner) {
+          return;
         }
+          if (!this.Published) {
+            const res = await this.$bvModal.msgBoxConfirm("Are you sure you want to make this proposition public?", {okTitle: "Yes", cancelTitle: "No"});
+            if (res === false) return;
+            this.Published = true;
+          } else {
+            const res = await this.$bvModal.msgBoxConfirm("Are you sure you want to make this proposition private?", {okTitle: "Yes", cancelTitle: "No"});
+            if (res === false) return;
+            this.Published = false;
+          }
       }
     },
     computed: {
+        isOwner() {
+          const userId = this.userInfoStore?.userInfo?.uid;
+          return (this.routeOwnerId === userId);
+        },
         nodes() {
             return [
                 ...this.IdealCustomerProfiles,
@@ -520,20 +555,29 @@ import { timeout } from 'd3';
           return links
         },
         routePropositionId() {
-          return this.$route.params?.id;
+          return this.$route.params?.propositionId;
+        },
+        routeOwnerId() {
+          return this.$route.params?.ownerId;
         }
     },
     watch: {
       nodes() {
         this.draw();
         // if this is a saved item, then auto-save changes
-        if (this.routePropositionId) {
+        if (this.routePropositionId && this.isOwner) {
           this.save();
         }
       },
       Name() {
         // if this is a saved item, then auto-save changes
-        if (this.routePropositionId) {
+        if (this.routePropositionId && this.isOwner) {
+          this.save();
+        }
+      },
+      Published(val) {
+        // if this is a saved item, then auto-save changes
+        if (this.routePropositionId && this.isOwner) {
           this.save();
         }
       },

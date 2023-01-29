@@ -31,7 +31,7 @@ import { RouterView } from 'vue-router';
                 .then((response)=>{
                     console.debug(response.user);
                     this.userInfoStore.set(response.user);
-                    this.$router.push({name: "home"});
+                    this.$router.push({name: "propositions"});
                 })
                 .catch((err)=>{
                     console.debug(JSON.stringify(err));

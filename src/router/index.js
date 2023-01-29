@@ -38,7 +38,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "propositions" */ '../views/PropositionsView.vue'),
   },
   {
-    path:'/propositions/:id',
+    path:'/propositions/:ownerId/:propositionId',
     name: 'proposition',
     component: () => import(/* webpackChunkName: "propositions" */ '../views/CanvasView.vue'),
   },

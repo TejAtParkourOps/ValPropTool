@@ -16,7 +16,7 @@
 
         <b-card style="max-width: 500px;" class="shadow mx-auto mt-5" title="Login Using Other Methods" :hidden="infoMsg.length > 0">
             <b-card-text>
-                You can use other services to sign into Value Proposition Tool.
+                Use other services to sign into Value Proposition Tool.
             </b-card-text>
             <b-button size="lg" variant="primary" block @click="loginWithGoogle" :disabled="busy">Google</b-button>
             <!-- <b-button size="lg" block>GitHub</b-button> -->
@@ -83,7 +83,7 @@ export default {
             federatedSignIn.signInWithPopup(auth, new federatedSignIn.GoogleAuthProvider)
                 .then((response)=>{
                     this.userInfoStore.set(response.user);
-                    this.$router.push({name:"home"});
+                    this.$router.push({name:"propositions"});
                 })
                 .catch((err)=>{
                     console.debug(JSON.stringify(err));

@@ -1,7 +1,7 @@
 <template>
     <div class="container" style="padding-top: 1.5rem">
         <div v-if="propositions.length < 1">
-            <p class="text-center h5 text-secondary mb-3">
+            <p class="text-center h5 text-secondary mt-4 mb-3">
                 You have no saved propositions.
             </p>
             <b-card class="proposition-item mx-auto" bg-variant="primary" text-variant="white">
@@ -109,7 +109,8 @@ import TextboxPromptModal from '@/modals/TextboxPromptModal.vue';
             this.$router.push({ name: "create" });
         },
         viewProp(prop) {
-            this.$router.push({name: "proposition", params: {id: prop.id}});
+            const userId = this.userInfoStore.getUserInfo?.uid;
+            this.$router.push({name: "proposition", params: {propositionId: prop.id, ownerId: userId}});
         },
         deleteProp(prop) {
             const userId = this.userInfoStore.getUserInfo?.uid;
