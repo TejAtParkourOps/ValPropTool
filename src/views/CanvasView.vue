@@ -627,7 +627,7 @@ import { timeout } from 'd3';
 
 <style lang="scss" >
   #canvas-wrapper {
-    overflow: scroll;
+    // overflow: scroll;
     height: 100vh;
     width: 100%;
     #canvas {
