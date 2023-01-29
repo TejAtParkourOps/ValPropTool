@@ -8,7 +8,7 @@
         You have no saved propositions.
       </h5>
       <b-card
-        class="proposition-item mx-auto"
+        class="proposition-item mx-auto shadow"
         bg-variant="dark"
         text-variant="white"
       >
@@ -39,15 +39,19 @@
       </b-card>
       <b-card
         v-for="prop in propositions"
-        class="proposition-item"
+        class="proposition-item shadow"
         :title="prop.name"
+        border-variant="light"
+        footer-bg-variant="dark"
+        text-variant="dark"
       >
+        <b-badge v-if="prop.published" variant="dark">Published</b-badge>
         <template #footer>
           <div class="d-flex flex-row justify-content-end">
             <b-dropdown
               split
               text="View"
-              variant="primary"
+              variant="light"
               @click="() => viewProp(prop)"
             >
               <!-- <b-dropdown-item>View</b-dropdown-item> -->

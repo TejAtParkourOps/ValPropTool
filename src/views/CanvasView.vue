@@ -875,10 +875,10 @@ export default {
 
 $fillColour: #d4e9ff;
 $highlightedFillColour: #8cc4ff;
-$fillColourPain: #ffd4d4;
-$highlightedFillColourPain: #ff8c8c;
-$fillColourGain: #fdd4ff;
-$highlightedFillColourGain: #e094e6;
+$fillColourPain: #FF9494;
+$highlightedFillColourPain: #FF6161;
+$fillColourGain: #F6A5FA;
+$highlightedFillColourGain: #F48CFA;
 
 .gain-line {
   stroke: $fillColourGain;
