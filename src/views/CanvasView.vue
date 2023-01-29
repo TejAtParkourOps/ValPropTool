@@ -878,7 +878,7 @@ $highlightedFillColour: #8cc4ff;
 $fillColourPain: #FF9494;
 $highlightedFillColourPain: #FF6161;
 $fillColourGain: #F6A5FA;
-$highlightedFillColourGain: #F48CFA;
+$highlightedFillColourGain: #F482FA;
 
 .gain-line {
   stroke: $fillColourGain;
