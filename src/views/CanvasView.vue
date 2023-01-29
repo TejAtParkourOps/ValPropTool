@@ -22,10 +22,32 @@
     </div>
     <!-- Context Menu -->
     <div id="context-menu" ref="context-menu">
-      <b-card class="shadow" v-if="selectedItem" >
-        Test
+      <b-card class="shadow" 
+        no-body
+        :header="this?.selectedItem?.type" 
+      >
+        <b-list-group flush style="pointer-events: auto">
+          <b-list-group-item href="#" @click="()=>{$refs.addCustomerJobModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Ideal Customer Profile'">Add Customer Job</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddCustomerPainModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Customer Job'">Add Pain</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddCustomerGainModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Customer Job'">Add Gain</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddPainRelieverModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'">Add Pain Reliever</b-list-group-item>
+      <b-list-group-item href="#" @click="()=>{$refs.AddGainCreatorModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'">Add Gain Creator</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{$refs.AddMessageModal.show(selectedItem.id)}" v-if="this?.selectedItem?.type === 'Pain Reliever' || this?.selectedItem?.type === 'Gain Creator'">Add Message</b-list-group-item>
+          <b-list-group-item href="#" @click="()=>{deleteItem(selectedItem)}">Delete</b-list-group-item>
+        </b-list-group> 
       </b-card>
     </div>
+    <!-- Context Menu -->
+    <div id="hover-menu" ref="hover-menu">
+      <b-card class="shadow" 
+        :header="this?.hoveredItem?.type" 
+        :border-variant="this?.hoveredItem?.type === 'Message' ? 'primary' : undefined" 
+        :header-bg-variant="this?.hoveredItem?.type === 'Message' ? 'primary' : undefined"
+        :header-text-variant="this?.hoveredItem?.type === 'Message' ? 'white' : undefined"
+      >
+        <p class="m-0" style="font-size: 0.7rem;">{{ this?.hoveredItem?.description }}</p>
+      </b-card>
+    </div>    
     <!-- Modals -->
     <TextboxPromptModal ref="TextboxPromptModal" />
     <AddCustomerJobModal ref="addCustomerJobModal" @newCustomerJobDescribed="newCustomerJob" />
@@ -57,6 +79,17 @@
 import { timeout } from 'd3';
 
   const objCopy = (toCopy) => JSON.parse(JSON.stringify(toCopy));
+  function monitorEvents(element) {
+  var log = function(e) { console.log(e);};
+  var events = [];
+
+  for(var i in element) {
+    if(i.startsWith("on")) events.push(i.substr(2));
+  }
+  events.forEach(function(eventName) {
+    element.addEventListener(eventName, log);
+  });
+}
 
   export default {
     name: "CanvasView",
@@ -139,21 +172,26 @@ import { timeout } from 'd3';
           .selectAll('line')
           .data(this.links)
           .join('line')
+            .attr("pointer-events", "none")
             .attr('stroke-width', "7px")
             .attr('stroke', '#D4E9FF')
             .classed('pain-line', l => {
               const source = this.nodes.find(n => n.id === l.source);
               const target = this.nodes.find(n => n.id === l.target);
               const sourceIsPainReliever = (source.type === 'Pain Reliever');
+              const sourceIsMsg = (source.type === 'Message');
               const targetIsCustomerPain = (target.type === 'Customer Pain');
-              return sourceIsPainReliever && targetIsCustomerPain;
+              const targetIsPainReliever = (target.type === 'Pain Reliever');
+              return (sourceIsPainReliever && targetIsCustomerPain) || (sourceIsMsg && targetIsPainReliever);
             })
             .classed('gain-line', l => {
               const source = this.nodes.find(n => n.id === l.source);
               const target = this.nodes.find(n => n.id === l.target);
               const sourceIsGainCreator = (source.type === 'Gain Creator');
+              const sourceIsMsg = (source.type === 'Message');
               const targetIsCustomerGain = (target.type === 'Customer Gain');
-              return sourceIsGainCreator && targetIsCustomerGain;
+              const targetIsGainCreator = (target.type === 'Gain Creator');
+              return (sourceIsGainCreator && targetIsCustomerGain) || (sourceIsMsg && targetIsGainCreator);
             })
             
 
@@ -169,82 +207,90 @@ import { timeout } from 'd3';
             .classed("cp", n => (n.type === "Customer Pain"))
             .classed("product", n => (n.type === "Product"))
             .classed("service", n => (n.type === "Service"))
-            .classed("msg", n => (n.type === "Message"))
+            .classed("msg-pain", n => {
+              const isMsg = n.type === "Message";
+              const parentNode = this.nodes.find(_n => _n.id === n.parentId);
+              const parentNodeIsPainReliever = parentNode?.type === 'Pain Reliever';
+              return isMsg && parentNodeIsPainReliever;
+            })
+            .classed("msg-gain", n => {
+              const isMsg = n.type === "Message";
+              const parentNode = this.nodes.find(_n => _n.id === n.parentId);
+              const parentNodeIsGainCreator = parentNode?.type === 'Gain Creator';
+              return isMsg && parentNodeIsGainCreator;
+            })
             .classed("pr", n => (n.type === "Pain Reliever"))
             .classed("gc", n => (n.type === "Gain Creator"))
-            .on("mouseenter", (d, i) => {
-              // d.preventDefault();
-              // d.stopPropagation();
-              this.hoveredItem = null;
-              this.selectedItem = i;
-              const ctxMenu = this.$refs["context-menu"];
-              ctxMenu.style.top = `${d.y + window.scrollY}px`;
-              ctxMenu.style.left = `${d.x}px`;
-              ctxMenu.classList.add("show");
-            })
-            .on("mouseleave", (d) => {
-              // d.preventDefault();
-              // d.stopPropagation();
-              this.hoveredItem = null;
-              this.selectedItem = null;
-            })
         
         this._circleElements = _wrapperElements
             .append("circle")
-            .attr("r", 60);
+            .attr("r", 60)
+            .on("pointermove", (ev, n) => {
+              if (this.selectedItem) return;
+              this.hoveredItem = n;
+              // set position
+              const hvrMenu = this.$refs["hover-menu"];
+              hvrMenu.style.top = `${ev.y + window.scrollY}px`;
+              hvrMenu.style.left = `${ev.x}px`;
+            })
+            .on("pointerleave", (ev, n) => {
+              this.hoveredItem = null;
+            })
+            .on("click", (ev, n) => {
+              this.selectedItem = n;
+              // hide hover
+              this.hoveredItem = null;
+              // set position
+              const ctxMenu = this.$refs["context-menu"];
+              ctxMenu.style.top = `${ev.y + window.scrollY}px`;
+              ctxMenu.style.left = `${ev.x}px`;
+            })
+
+          this._graphContent.on("click", (e) => {
+            if (e?.srcElement?.id === "canvas")
+              this.selectedItem = null;
+          })
 
         const a = this._graphContent.selectAll("g.icp").append('image')
-        .attr("href",  "/icons/customer-profile.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/customer-profile.svg");
 
         const b = this._graphContent.selectAll("g.cj").append('image')
-        .attr("href",  "/icons/customer-job.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/customer-job.svg");
 
         const c = this._graphContent.selectAll("g.cg").append('image')
-        .attr("href",  "/icons/customer-gain.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/customer-gain.svg");
 
         const d = this._graphContent.selectAll("g.cp").append('image')
-        .attr("href",  "/icons/customer-pain.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/customer-pain.svg");
 
         const e = this._graphContent.selectAll("g.product").append('image')
-        .attr("href",  "/icons/product.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/product.svg");
 
         const f = this._graphContent.selectAll("g.service").append('image')
-        .attr("href",  "/icons/service.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/service.svg");
 
-        const g = this._graphContent.selectAll("g.msg").append('image')
-        .attr("href",  "/icons/message.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+        const g = this._graphContent.selectAll("g.msg-pain,g.msg-gain").append('image')
+          .attr("href",  "/icons/message.svg");
 
         const h = this._graphContent.selectAll("g.pr").append('image')
-        .attr("href",  "/icons/pain-reliever.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/pain-reliever.svg");
 
         const i = this._graphContent.selectAll("g.gc").append('image')
-        .attr("href",  "/icons/gain-creator.svg")
-        .attr("height", "60px")
-        .attr("width", "60px");
+          .attr("href",  "/icons/gain-creator.svg");
+
 
         this._iconElements = d3.selectAll([...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i]);
+        this._iconElements
+          .attr("height", "60px")
+          .attr("width", "60px")
+          .attr("pointer-events", "none");
 
-        this._graphContent.on("click", () => {
-            this.selectedItem = null;
-            const ctxMenu = this.$refs["context-menu"];
-            ctxMenu.classList.remove("show");
-        });
+        
+        // this._graphContent.on("click", () => {
+        //     this.selectedItem = null;
+        //     const ctxMenu = this.$refs["context-menu"];
+        //     ctxMenu.classList.remove("show");
+        // });
 
         // https://www.d3indepth.com/force-layout/
         this._simulation = d3.forceSimulation(this.nodes)
@@ -488,19 +534,35 @@ import { timeout } from 'd3';
       Name() {
         // if this is a saved item, then auto-save changes
         if (this.routePropositionId) {
-                  this.save();
-                }
+          this.save();
+        }
+      },
+      selectedItem(val) {
+        const ctxMenu = this.$refs["context-menu"];
+        if (val) {
+          ctxMenu.classList.add("show");
+        } else {
+          ctxMenu.classList.remove("show");
+        }
+      },
+      hoveredItem(val) {
+        const hvrMenu = this.$refs["hover-menu"];
+        if (val) {
+          hvrMenu.classList.add("show");
+        } else {
+          hvrMenu.classList.remove("show");
+        }
       }
     },
     mounted() {
         // load saved info if any
         this.load();
         // initialize graph
-        this._graphContent = d3
-          .select("#canvas")
+        this._graphContent = d3.select("#canvas")
         // TODO: apply zoom/pan here
         // draw
         this.draw();
+        //
     },
     beforeRouteLeave(to, from, next) {
       // TODO: Fix this notification!
@@ -527,9 +589,11 @@ import { timeout } from 'd3';
     #canvas {
       height: 100%;
       width: 100%;
+      // :not(g) {
+      //     pointer-events: none;
+      // }
     }
   }
-
 
   $fillColour: #D4E9FF;
   $highlightedFillColour: #8CC4FF;
@@ -540,10 +604,12 @@ import { timeout } from 'd3';
 
   .gain-line {
     stroke: $fillColourGain;
+    stroke-width: 14px;
   }
 
   .pain-line {
     stroke: $fillColourPain;
+    stroke-width: 14px;
   }
 
   .line {
@@ -566,7 +632,7 @@ import { timeout } from 'd3';
     }
   }
 
-  .cg {
+  .cg, .msg-gain {
     cursor: pointer;
     fill: $fillColourGain;
     &:hover {
@@ -574,7 +640,7 @@ import { timeout } from 'd3';
     }
   }
 
-  .cp {
+  .cp, .msg-pain {
     cursor: pointer;
     fill: $fillColourPain;
     &:hover {
@@ -591,14 +657,6 @@ import { timeout } from 'd3';
   }
   
   .service {
-    cursor: pointer;
-    fill: $fillColour;
-    &:hover {
-      fill: $highlightedFillColour;
-    }
-  }
-
-  .msg {
     cursor: pointer;
     fill: $fillColour;
     &:hover {
@@ -636,6 +694,7 @@ import { timeout } from 'd3';
       user-select: none;
       -webkit-user-drag: none;
     }
+    pointer-events: none; // this is important to stop context-menu from intervening in svg element pointer events
   }
 
   .project-name {
@@ -645,9 +704,8 @@ import { timeout } from 'd3';
     }
   }
 
-  :not(.node-wrapper) {
-      pointer-events: none;
-  }
+
+
 
 
 </style>
