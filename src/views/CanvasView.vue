@@ -102,6 +102,17 @@
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.AddCustomerGainModal.showForEdit(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Customer Gain'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >
           <!-- Add Options -->
           <b-list-group-item
             href="#"
@@ -129,7 +140,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddCustomerGainModal.show(selectedItem.id);
+                $refs.AddCustomerGainModal.showForAdd(selectedItem.id);
               }
             "
             v-if="this?.selectedItem?.type === 'Customer Job'"
@@ -222,6 +233,7 @@
     <AddCustomerGainModal
       ref="AddCustomerGainModal"
       @newCustomerGainDescribed="newCustomerGain"
+      @customerGainRedescribed="updateCustomerGain"
     />
     <AddCustomerPainModal
       ref="AddCustomerPainModal"
@@ -382,6 +394,15 @@ export default {
         this.Pains.filter((cp) => cp.id !== updatedCustomerPain.id)
       );
       this.Pains.push(updatedCustomerPain);
+      this.selectedItem = null;
+    },
+    updateCustomerGain(updatedCustomerGain) {
+      this.$set(
+        this,
+        "Gains",
+        this.Gains.filter((cg) => cg.id !== updatedCustomerGain.id)
+      );
+      this.Gains.push(updatedCustomerGain);
       this.selectedItem = null;
     },
     changeName() {
