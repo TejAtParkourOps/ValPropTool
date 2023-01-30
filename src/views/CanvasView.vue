@@ -68,6 +68,19 @@
     <div id="context-menu" ref="context-menu">
       <b-card class="shadow" no-body :header="this?.selectedItem?.type">
         <b-list-group flush style="pointer-events: auto">
+          <!-- Edit Options -->
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.AddIdealCustomerProfileModal.show(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Ideal Customer Profile'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >
+          <!-- Add Options -->
           <b-list-group-item
             href="#"
             @click="
@@ -143,6 +156,7 @@
             :disabled="routePropositionId && !isOwner"
             >Add Message</b-list-group-item
           >
+          <!-- Delete Option -->
           <b-list-group-item
             href="#"
             @click="
@@ -193,6 +207,7 @@
     <AddIdealCustomerProfileModal
       ref="AddIdealCustomerProfileModal"
       @newIdealCustomerProfileDescribed="newIdealCustomerProfile"
+      @idealCustomerProfileRedescribed="updateIdealCustomerProfile"
     />
     <AddProductOrServiceModal
       ref="AddProductOrServiceModal"
@@ -316,6 +331,15 @@ export default {
     },
     newGainCreator(gainCreator) {
       this.PainRelievers.push(gainCreator);
+      this.selectedItem = null;
+    },
+    updateIdealCustomerProfile(updatedIcp) {
+      this.$set(
+        this,
+        "IdealCustomerProfiles",
+        this.IdealCustomerProfiles.filter((icp) => icp.id !== updatedIcp.id)
+      );
+      this.IdealCustomerProfiles.push(updatedIcp);
       this.selectedItem = null;
     },
     changeName() {

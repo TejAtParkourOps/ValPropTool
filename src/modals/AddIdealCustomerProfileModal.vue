@@ -4,24 +4,35 @@ import { v4 as uuidv4 } from "uuid";
 export default {
   name: "AddIdealCustomerProfileModal",
   methods: {
-    show() {
-      this.description = "";
+    show(idealCustomerProfileToEdit) {
+      if (idealCustomerProfileToEdit) {
+        this.icpToEdit = idealCustomerProfileToEdit;
+        this.description = this.icpToEdit.description;
+      } else {
+        this.description = "";
+      }
       this.$refs.modal.show();
     },
     hide() {
       this.$refs.modal.hide();
     },
     emit() {
-      this.$emit("newIdealCustomerProfileDescribed", {
-        id: uuidv4(),
-        type: "Ideal Customer Profile",
-        description: this.description,
-      });
+      if (this.icpToEdit) {
+        this.icpToEdit.description = this.description;
+        this.$emit("idealCustomerProfileRedescribed", this.icpToEdit);
+      } else {
+        this.$emit("newIdealCustomerProfileDescribed", {
+          id: uuidv4(),
+          type: "Ideal Customer Profile",
+          description: this.description,
+        });
+      }
     },
   },
   data() {
     return {
       description: "",
+      icpToEdit: null,
     };
   },
 };
