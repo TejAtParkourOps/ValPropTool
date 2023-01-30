@@ -146,6 +146,17 @@
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.AddMessageModal.showForEdit(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Message'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >          
           <!-- Add Options -->
           <b-list-group-item
             href="#"
@@ -212,7 +223,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddMessageModal.show(selectedItem.id);
+                $refs.AddMessageModal.showForAdd(selectedItem.id);
               }
             "
             v-if="
@@ -283,7 +294,11 @@
       @newProductOrServiceDescribed="newProductOrService"
       @productOrServiceRedescribed="updateProductOrService"
     />
-    <AddMessageModal ref="AddMessageModal" @newMessageDescribed="newMessage" />
+    <AddMessageModal 
+      ref="AddMessageModal" 
+      @newMessageDescribed="newMessage" 
+      @messageRedescribed="updateMessage"
+    />
     <AddPainRelieverModal
       ref="AddPainRelieverModal"
       @newPainRelieverDescribed="newPainReliever"
@@ -465,6 +480,15 @@ export default {
         this.GainCreators.filter((gc) => gc.id !== updatedGainCreator.id)
       );
       this.GainCreators.push(updatedGainCreator);
+      this.selectedItem = null;
+    },
+    updateMessage(updatedMessage) {
+      this.$set(
+        this,
+        "Messages",
+        this.Messages.filter((m) => m.id !== updatedMessage.id)
+      );
+      this.Messages.push(updatedMessage);
       this.selectedItem = null;
     },
     changeName() {
