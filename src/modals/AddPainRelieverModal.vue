@@ -44,6 +44,7 @@ export default {
   },
   methods: {
     showForAdd(parentId) {
+      this.painRelieverToEdit = null;
       this.description = "";
       this.relatesTo = [];
       this.parentId = parentId;

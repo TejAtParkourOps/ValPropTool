@@ -5,6 +5,7 @@ export default {
   name: "AddCustomerJobModal",
   methods: {
     showForAdd(parentId) {
+      this.customerJobToEdit = null;
       this.description = "";
       this.parentId = parentId;
       this.$refs.modal.show();

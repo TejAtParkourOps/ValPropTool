@@ -9,6 +9,7 @@ export default {
         this.icpToEdit = idealCustomerProfileToEdit;
         this.description = this.icpToEdit.description;
       } else {
+        this.icpToEdit = null;
         this.description = "";
       }
       this.$refs.modal.show();

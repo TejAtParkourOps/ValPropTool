@@ -5,6 +5,7 @@ export default {
   name: "AddCustomerGainModal",
   methods: {
     showForAdd(parentId) {
+      this.customerGainToEdit = null;
       this.description = "";
       this.parentId = parentId;
       this.$refs.modal.show();

@@ -44,6 +44,7 @@ export default {
   },
   methods: {
     showForAdd(parentId) {
+      this.gainCreatorToEdit = null;
       this.description = "";
       this.relatesTo = [];
       this.parentId = parentId;

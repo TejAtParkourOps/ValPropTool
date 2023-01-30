@@ -5,6 +5,7 @@ export default {
   name: "AddProductOrServiceModal",
   methods: {
     showForAdd() {
+      this.productOrServiceToEdit = null;
       this.description = "";
       this.type = "Product";
       this.$refs.modal.show();

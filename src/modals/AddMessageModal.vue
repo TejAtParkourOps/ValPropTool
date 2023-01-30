@@ -5,6 +5,7 @@ export default {
   name: "AddMessageModal",
   methods: {
     showForAdd(parentId) {
+      this.messageToEdit = null;
       this.description = "";
       this.parentId = parentId;
       this.$refs.modal.show();

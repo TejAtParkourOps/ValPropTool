@@ -5,6 +5,7 @@ export default {
   name: "AddCustomerPainModal",
   methods: {
     showForAdd(parentId) {
+      this.customerPainToEdit = null;
       this.description = "";
       this.parentId = parentId;
       this.$refs.modal.show();
