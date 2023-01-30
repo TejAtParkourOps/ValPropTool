@@ -4,20 +4,32 @@ import { v4 as uuidv4 } from "uuid";
 export default {
   name: "AddProductOrServiceModal",
   methods: {
-    show() {
+    showForAdd() {
       this.description = "";
       this.type = "Product";
+      this.$refs.modal.show();
+    },
+    showForEdit(productOrServiceToEdit) {
+      this.productOrServiceToEdit = productOrServiceToEdit;
+      this.description = this.productOrServiceToEdit.description;
+      this.type = this.productOrServiceToEdit.type;
       this.$refs.modal.show();
     },
     hide() {
       this.$refs.modal.hide();
     },
     emit() {
-      this.$emit("newProductOrServiceDescribed", {
-        id: uuidv4(),
-        type: this.type,
-        description: this.description,
-      });
+      if (this.productOrServiceToEdit) {
+        this.productOrServiceToEdit.description = this.description;
+        this.productOrServiceToEdit.type = this.type;
+        this.$emit("productOrServiceRedescribed", this.productOrServiceToEdit);
+      } else {
+        this.$emit("newProductOrServiceDescribed", {
+          id: uuidv4(),
+          type: this.type,
+          description: this.description,
+        });
+      }
     },
   },
   data() {
@@ -25,6 +37,7 @@ export default {
       description: "",
       type: "Product",
       typeOptions: ["Product", "Service"],
+      productOrServiceToEdit: null
     };
   },
 };

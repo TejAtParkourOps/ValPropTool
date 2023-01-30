@@ -17,7 +17,7 @@
         <b-button
           variant="primary"
           class="mr-1"
-          @click="() => $refs.AddProductOrServiceModal.show()"
+          @click="() => $refs.AddProductOrServiceModal.showForAdd()"
           :disabled="routePropositionId && !isOwner"
           >Add Product/Service</b-button
         >
@@ -77,6 +77,17 @@
               }
             "
             v-if="this?.selectedItem?.type === 'Ideal Customer Profile'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.AddProductOrServiceModal.showForEdit(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'"
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
@@ -248,6 +259,7 @@
     <AddProductOrServiceModal
       ref="AddProductOrServiceModal"
       @newProductOrServiceDescribed="newProductOrService"
+      @productOrServiceRedescribed="updateProductOrService"
     />
     <AddMessageModal ref="AddMessageModal" @newMessageDescribed="newMessage" />
     <AddPainRelieverModal
@@ -376,6 +388,15 @@ export default {
         this.IdealCustomerProfiles.filter((icp) => icp.id !== updatedIcp.id)
       );
       this.IdealCustomerProfiles.push(updatedIcp);
+      this.selectedItem = null;
+    },
+    updateProductOrService(updatedProductOrService) {
+      this.$set(
+        this,
+        "ProductsAndServices",
+        this.ProductsAndServices.filter((pOrS) => pOrS.id !== updatedProductOrService.id)
+      );
+      this.ProductsAndServices.push(updatedProductOrService);
       this.selectedItem = null;
     },
     updateCustomerJob(updatedCustomerJob) {
