@@ -45,7 +45,7 @@ export default {
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Add Customer Pain"
+    :title="customerPainToEdit ? 'Edit Customer Pain' : 'Add Customer Pain'"
     @ok="emit"
     :ok-disabled="description.length < 1"
   >

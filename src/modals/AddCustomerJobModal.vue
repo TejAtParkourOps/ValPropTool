@@ -45,7 +45,7 @@ export default {
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Add Customer Job"
+    :title="customerJobToEdit ? 'Edit Customer Job' : 'Add Customer Job'"
     @ok="emit"
     :ok-disabled="description.length < 1"
   >

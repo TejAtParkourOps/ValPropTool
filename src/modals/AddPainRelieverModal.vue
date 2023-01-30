@@ -2,7 +2,7 @@
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Pain Reliever"
+    :title="painRelieverToEdit ? 'Edit Pain Reliever' : 'Add Pain Reliever'"
     @ok="emit"
     :ok-disabled="description.length < 1 || relatesTo.length < 1"
   >

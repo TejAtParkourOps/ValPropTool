@@ -47,7 +47,7 @@ export default {
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Add Product or Service"
+    :title="productOrServiceToEdit ? 'Edit Product or Service' : 'Add Product or Service'"
     @ok="emit"
     :ok-disabled="description.length < 1"
   >

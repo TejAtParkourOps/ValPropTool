@@ -45,7 +45,7 @@ export default {
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Add Customer Gain"
+    :title="customerGainToEdit ? 'Edit Customer Gain' : 'Add Customer Gain'"
     @ok="emit"
     :ok-disabled="description.length < 1"
   >

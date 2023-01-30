@@ -45,7 +45,7 @@ export default {
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Message"
+    :title="messageToEdit ? 'Edit Message' : 'Add Message'"
     @ok="emit"
     :ok-disabled="description.length < 1"
   >

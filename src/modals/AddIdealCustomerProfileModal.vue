@@ -42,7 +42,7 @@ export default {
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Add Ideal Customer Profile"
+    :title="icpToEdit ? 'Edit Ideal Customer Profile' : 'Add Ideal Customer Profile'"
     @ok="emit"
     :ok-disabled="description.length < 1"
   >

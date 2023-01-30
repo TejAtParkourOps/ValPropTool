@@ -2,7 +2,7 @@
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    title="Add Gain Creator"
+    :title="gainCreatorToEdit ? 'Edit Gain Creator' : 'Add Gain Creator'"
     @ok="emit"
     :ok-disabled="description.length < 1 || relatesTo.length < 1"
   >
