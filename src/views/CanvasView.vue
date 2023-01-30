@@ -433,6 +433,7 @@ export default {
       }
 
       const links = objCopy(this.links);
+      // const nodes = objCopy(this.nodes);
 
       this._linkElements = this._graphContent
         .append("g")
@@ -445,6 +446,7 @@ export default {
         .classed("pain-line", (l) => {
           const source = this.nodes.find((n) => n.id === l.source);
           const target = this.nodes.find((n) => n.id === l.target);
+          console.log(l.target)
           const sourceIsPainReliever = source.type === "Pain Reliever";
           const sourceIsMsg = source.type === "Message";
           const targetIsCustomerPain = target.type === "Customer Pain";
@@ -479,18 +481,19 @@ export default {
         .classed("cp", (n) => n.type === "Customer Pain")
         .classed("product", (n) => n.type === "Product")
         .classed("service", (n) => n.type === "Service")
-        .classed("msg-pain", (n) => {
-          const isMsg = n.type === "Message";
-          const parentNode = this.nodes.find((_n) => _n.id === n.parentId);
-          const parentNodeIsPainReliever = parentNode?.type === "Pain Reliever";
-          return isMsg && parentNodeIsPainReliever;
-        })
-        .classed("msg-gain", (n) => {
-          const isMsg = n.type === "Message";
-          const parentNode = this.nodes.find((_n) => _n.id === n.parentId);
-          const parentNodeIsGainCreator = parentNode?.type === "Gain Creator";
-          return isMsg && parentNodeIsGainCreator;
-        })
+        // TODO: 
+        // .classed("msg-pain", (n) => {
+        //   const isMsg = n.type === "Message";
+        //   const parentNode = this.nodes.find((_n) => _n.id === n.parentId);
+        //   const parentNodeIsPainReliever = parentNode?.type === "Pain Reliever";
+        //   return isMsg && parentNodeIsPainReliever;
+        // })
+        // .classed("msg-gain", (n) => {
+        //   const isMsg = n.type === "Message";
+        //   const parentNode = this.nodes.find((_n) => _n.id === n.parentId);
+        //   const parentNodeIsGainCreator = parentNode?.type === "Gain Creator";
+        //   return isMsg && parentNodeIsGainCreator;
+        // })
         .classed("pr", (n) => n.type === "Pain Reliever")
         .classed("gc", (n) => n.type === "Gain Creator");
 
@@ -634,14 +637,19 @@ export default {
     },
     innerDelete(item) {
       // delete all direct child elements
-      let childNode = this.nodes.filter((n) => n.parentId === item.id);
-      childNode.forEach((n) => this.innerDelete(n));
+      // let childNode = this.nodes.filter((n) => n.parentId === item.id);
+      // childNode.forEach((n) => this.innerDelete(n));
       // delete all links to this item
       this.forEachNodeArray((arrKey) =>
         this.$set(
           this,
           arrKey,
           this[arrKey].map((i) => {
+            // child nodes
+            if (i?.parentIds?.includes(item.id)) {
+              i.parentIds = i.parentIds.filter((j) => j !== item.id);
+            }
+            // relations
             if (i?.relatesTo?.includes(item.id)) {
               i.relatesTo = i.relatesTo.filter((j) => j !== item.id);
             }
@@ -856,11 +864,13 @@ export default {
     links() {
       const links = [];
       this.nodes.forEach((node) => {
-        if (node.parentId) {
-          links.push({
-            source: node.id,
-            target: node.parentId,
-          });
+        if (node.parentIds) {
+          for (let parent of node.parentIds) {
+            links.push({
+              source: node.id,
+              target: parent,
+            });
+          }
         }
         if (node.relatesTo && Array.isArray(node.relatesTo)) {
           for (let relation of node.relatesTo) {

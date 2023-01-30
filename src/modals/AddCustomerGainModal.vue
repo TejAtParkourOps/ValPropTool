@@ -7,7 +7,7 @@ export default {
     showForAdd(parentId) {
       this.customerGainToEdit = null;
       this.description = "";
-      this.parentId = parentId;
+      this.parentIds = [parentId];
       this.$refs.modal.show();
     },
     showForEdit(customerGainToEdit) {
@@ -25,7 +25,7 @@ export default {
       } else {
           this.$emit("newCustomerGainDescribed", {
           id: uuidv4(),
-          parentId: this.parentId,
+          parentIds: this.parentIds,
           type: "Customer Gain",
           description: this.description,
         });
@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       description: "",
-      parentId: "",
+      parentIds: [""],
       customerGainToEdit: null
     };
   },

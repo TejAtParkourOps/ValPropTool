@@ -47,7 +47,7 @@ export default {
       this.painRelieverToEdit = null;
       this.description = "";
       this.relatesTo = [];
-      this.parentId = parentId;
+      this.parentIds = [parentId];
       this.$refs.modal.show();
     },
     showForEdit(painRelieverToEdit) {
@@ -67,7 +67,7 @@ export default {
       } else {
         this.$emit("newPainRelieverDescribed", {
           id: uuidv4(),
-          parentId: this.parentId,
+          parentIds: this.parentIds,
           type: "Pain Reliever",
           description: this.description,
           relatesTo: this.relatesTo.map((o) => o.id),
@@ -79,7 +79,7 @@ export default {
     return {
       description: "",
       relatesTo: [],
-      parentId: "",
+      parentIds: [""],
       painRelieverToEdit: null
     };
   },

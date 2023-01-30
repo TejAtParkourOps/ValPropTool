@@ -7,7 +7,7 @@ export default {
     showForAdd(parentId) {
       this.customerPainToEdit = null;
       this.description = "";
-      this.parentId = parentId;
+      this.parentIds = [parentId];
       this.$refs.modal.show();
     },
     showForEdit(customerPainToEdit) {
@@ -25,7 +25,7 @@ export default {
       } else {
         this.$emit("newCustomerPainDescribed", {
           id: uuidv4(),
-          parentId: this.parentId,
+          parentIds: this.parentIds,
           type: "Customer Pain",
           description: this.description,
         });
@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       description: "",
-      parentId: "",
+      parentIds: [""],
       customerPainToEdit: null
     };
   },

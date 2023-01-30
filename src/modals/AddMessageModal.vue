@@ -7,7 +7,7 @@ export default {
     showForAdd(parentId) {
       this.messageToEdit = null;
       this.description = "";
-      this.parentId = parentId;
+      this.parentIds = [parentId];
       this.$refs.modal.show();
     },
     showForEdit(messageToEdit) {
@@ -25,7 +25,7 @@ export default {
       } else {
         this.$emit("newMessageDescribed", {
           id: uuidv4(),
-          parentId: this.parentId,
+          parentIds: this.parentIds,
           type: "Message",
           description: this.description,
         });
@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       description: "",
-      parentId: "",
+      parentIds: [""],
       messageToEdit: null
     };
   },
