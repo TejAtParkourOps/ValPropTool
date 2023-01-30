@@ -4,27 +4,38 @@ import { v4 as uuidv4 } from "uuid";
 export default {
   name: "AddCustomerJobModal",
   methods: {
-    show(parentId) {
+    showForAdd(parentId) {
       this.description = "";
       this.parentId = parentId;
+      this.$refs.modal.show();
+    },
+    showForEdit(customerJobToEdit) {
+      this.customerJobToEdit = customerJobToEdit;
+      this.description = this.customerJobToEdit.description;
       this.$refs.modal.show();
     },
     hide() {
       this.$refs.modal.hide();
     },
     emit() {
-      this.$emit("newCustomerJobDescribed", {
-        id: uuidv4(),
-        parentId: this.parentId,
-        type: "Customer Job",
-        description: this.description,
-      });
+      if (this.customerJobToEdit) {
+        this.customerJobToEdit.description = this.description;
+        this.$emit("customerJobRedescribed", this.customerJobToEdit);
+      } else {
+        this.$emit("newCustomerJobDescribed", {
+          id: uuidv4(),
+          parentId: this.parentId,
+          type: "Customer Job",
+          description: this.description,
+        });
+      }
     },
   },
   data() {
     return {
       description: "",
       parentId: "",
+      customerJobToEdit: null
     };
   },
 };

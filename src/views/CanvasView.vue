@@ -80,12 +80,23 @@
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.addCustomerJobModal.showForEdit(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Customer Job'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >
           <!-- Add Options -->
           <b-list-group-item
             href="#"
             @click="
               () => {
-                $refs.addCustomerJobModal.show(selectedItem.id);
+                $refs.addCustomerJobModal.showForAdd(selectedItem.id);
               }
             "
             v-if="this?.selectedItem?.type === 'Ideal Customer Profile'"
@@ -195,6 +206,7 @@
     <AddCustomerJobModal
       ref="addCustomerJobModal"
       @newCustomerJobDescribed="newCustomerJob"
+      @customerJobRedescribed="updateCustomerJob"
     />
     <AddCustomerGainModal
       ref="AddCustomerGainModal"
@@ -340,6 +352,15 @@ export default {
         this.IdealCustomerProfiles.filter((icp) => icp.id !== updatedIcp.id)
       );
       this.IdealCustomerProfiles.push(updatedIcp);
+      this.selectedItem = null;
+    },
+    updateCustomerJob(updatedCustomerJob) {
+      this.$set(
+        this,
+        "CustomerJobs",
+        this.CustomerJobs.filter((cj) => cj.id !== updatedCustomerJob.id)
+      );
+      this.CustomerJobs.push(updatedCustomerJob);
       this.selectedItem = null;
     },
     changeName() {
