@@ -124,6 +124,17 @@
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.AddPainRelieverModal.showForEdit(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Pain Reliever'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >          
           <!-- Add Options -->
           <b-list-group-item
             href="#"
@@ -162,7 +173,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddPainRelieverModal.show(selectedItem.id);
+                $refs.AddPainRelieverModal.showForAdd(selectedItem.id);
               }
             "
             v-if="
@@ -265,6 +276,7 @@
     <AddPainRelieverModal
       ref="AddPainRelieverModal"
       @newPainRelieverDescribed="newPainReliever"
+      @painRelieverRedescribed="updatePainReliever"
       :customer-pains="Pains"
     />
     <AddGainCreatorModal
@@ -424,6 +436,15 @@ export default {
         this.Gains.filter((cg) => cg.id !== updatedCustomerGain.id)
       );
       this.Gains.push(updatedCustomerGain);
+      this.selectedItem = null;
+    },
+    updatePainReliever(updatedPainReliever) {
+      this.$set(
+        this,
+        "PainRelievers",
+        this.PainRelievers.filter((pr) => pr.id !== updatedPainReliever.id)
+      );
+      this.PainRelievers.push(updatedPainReliever);
       this.selectedItem = null;
     },
     changeName() {

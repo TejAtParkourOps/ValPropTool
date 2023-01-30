@@ -43,23 +43,35 @@ export default {
     customerPains: Array,
   },
   methods: {
-    show(parentId) {
+    showForAdd(parentId) {
       this.description = "";
       this.relatesTo = [];
       this.parentId = parentId;
+      this.$refs.modal.show();
+    },
+    showForEdit(painRelieverToEdit) {
+      this.painRelieverToEdit = painRelieverToEdit;
+      this.description = this.painRelieverToEdit.description;
+      this.relatesTo = this.painRelieverToEdit.relatesTo.map(p => this.customerPains.find(q => q.id === p));
       this.$refs.modal.show();
     },
     hide() {
       this.$refs.modal.hide();
     },
     emit() {
-      this.$emit("newPainRelieverDescribed", {
-        id: uuidv4(),
-        parentId: this.parentId,
-        type: "Pain Reliever",
-        description: this.description,
-        relatesTo: this.relatesTo.map((o) => o.id),
-      });
+      if (this.painRelieverToEdit) {
+        this.painRelieverToEdit.description = this.description;
+        this.painRelieverToEdit.relatesTo = this.relatesTo.map((o) => o.id);
+        this.$emit("painRelieverRedescribed", this.painRelieverToEdit);
+      } else {
+        this.$emit("newPainRelieverDescribed", {
+          id: uuidv4(),
+          parentId: this.parentId,
+          type: "Pain Reliever",
+          description: this.description,
+          relatesTo: this.relatesTo.map((o) => o.id),
+        });
+      }
     },
   },
   data() {
@@ -67,6 +79,7 @@ export default {
       description: "",
       relatesTo: [],
       parentId: "",
+      painRelieverToEdit: null
     };
   },
 };
