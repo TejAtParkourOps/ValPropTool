@@ -332,7 +332,7 @@ import TextboxPromptModal from "@/modals/TextboxPromptModal.vue";
 const objCopy = (toCopy) => JSON.parse(JSON.stringify(toCopy));
 function monitorEvents(element) {
   var log = function (e) {
-    console.log(e);
+    console.debug(e);
   };
   var events = [];
 
@@ -525,15 +525,7 @@ export default {
         .attr("stroke", "#D4E9FF")
         .classed("pain-line", (l) => {
           const source = this.nodes.find((n) => n.id === l.source);
-          // if (!source) {
-          //   console.log(`could not find: ${JSON.stringify(l.source)}`);
-          // }
           const target = this.nodes.find((n) => n.id === l.target);
-
-          // console.log(target)
-          // if (!target) {
-          //   console.log(`could not find: ${JSON.stringify(l.target)}`);
-          // }
           const sourceIsPainReliever = source.type === "Pain Reliever";
           const sourceIsMsg = source.type === "Message";
           const targetIsCustomerPain = target.type === "Customer Pain";
