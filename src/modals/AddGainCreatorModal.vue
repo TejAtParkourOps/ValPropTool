@@ -43,23 +43,35 @@ export default {
     customerGains: Array,
   },
   methods: {
-    show(parentId) {
+    showForAdd(parentId) {
       this.description = "";
       this.relatesTo = [];
       this.parentId = parentId;
+      this.$refs.modal.show();
+    },
+    showForEdit(gainCreatorToEdit) {
+      this.gainCreatorToEdit = gainCreatorToEdit;
+      this.description = this.gainCreatorToEdit.description;
+      this.relatesTo = this.gainCreatorToEdit.relatesTo.map(g => this.customerGains.find(h => h.id === g));
       this.$refs.modal.show();
     },
     hide() {
       this.$refs.modal.hide();
     },
     emit() {
-      this.$emit("newGainCreatorDescribed", {
-        id: uuidv4(),
-        parentId: this.parentId,
-        type: "Gain Creator",
-        description: this.description,
-        relatesTo: this.relatesTo.map((o) => o.id),
-      });
+      if (this.gainCreatorToEdit) {
+        this.gainCreatorToEdit.description = this.description;
+        this.gainCreatorToEdit.relatesTo = this.relatesTo.map((o) => o.id);
+        this.$emit("gainCreatorRedescribed", this.gainCreatorToEdit);
+      } else {
+        this.$emit("newGainCreatorDescribed", {
+          id: uuidv4(),
+          parentId: this.parentId,
+          type: "Gain Creator",
+          description: this.description,
+          relatesTo: this.relatesTo.map((o) => o.id),
+        });
+      }
     },
   },
   data() {
@@ -67,6 +79,7 @@ export default {
       description: "",
       relatesTo: [],
       parentId: "",
+      gainCreatorToEdit: null
     };
   },
 };

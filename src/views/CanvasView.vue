@@ -135,6 +135,17 @@
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >          
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.AddGainCreatorModal.showForEdit(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Gain Creator'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >
           <!-- Add Options -->
           <b-list-group-item
             href="#"
@@ -187,7 +198,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddGainCreatorModal.show(selectedItem.id);
+                $refs.AddGainCreatorModal.showForAdd(selectedItem.id);
               }
             "
             v-if="
@@ -282,6 +293,7 @@
     <AddGainCreatorModal
       ref="AddGainCreatorModal"
       @newGainCreatorDescribed="newGainCreator"
+      @gainCreatorRedescribed="updateGainCreator"
       :customer-gains="Gains"
     />
   </div>
@@ -301,7 +313,6 @@ import AddGainCreatorModal from "@/modals/AddGainCreatorModal.vue";
 import * as d3 from "d3";
 import { uuidv4 } from "@firebase/util";
 import TextboxPromptModal from "@/modals/TextboxPromptModal.vue";
-import { timeout } from "d3";
 
 const objCopy = (toCopy) => JSON.parse(JSON.stringify(toCopy));
 function monitorEvents(element) {
@@ -390,7 +401,7 @@ export default {
       this.selectedItem = null;
     },
     newGainCreator(gainCreator) {
-      this.PainRelievers.push(gainCreator);
+      this.GainCreators.push(gainCreator);
       this.selectedItem = null;
     },
     updateIdealCustomerProfile(updatedIcp) {
@@ -445,6 +456,15 @@ export default {
         this.PainRelievers.filter((pr) => pr.id !== updatedPainReliever.id)
       );
       this.PainRelievers.push(updatedPainReliever);
+      this.selectedItem = null;
+    },
+    updateGainCreator(updatedGainCreator) {
+      this.$set(
+        this,
+        "GainCreators",
+        this.GainCreators.filter((gc) => gc.id !== updatedGainCreator.id)
+      );
+      this.GainCreators.push(updatedGainCreator);
       this.selectedItem = null;
     },
     changeName() {
