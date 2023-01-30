@@ -17,6 +17,11 @@ import "../node_modules/vue-multiselect/dist/vue-multiselect.min.css";
 
 Vue.config.productionTip = false;
 
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {};
+  console.debug = () => {};
+}
+
 new Vue({
   router,
   render: (h) => h(App),
