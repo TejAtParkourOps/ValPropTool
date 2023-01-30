@@ -4,27 +4,38 @@ import { v4 as uuidv4 } from "uuid";
 export default {
   name: "AddCustomerPainModal",
   methods: {
-    show(parentId) {
+    showForAdd(parentId) {
       this.description = "";
       this.parentId = parentId;
+      this.$refs.modal.show();
+    },
+    showForEdit(customerPainToEdit) {
+      this.customerPainToEdit = customerPainToEdit;
+      this.description = this.customerPainToEdit.description;
       this.$refs.modal.show();
     },
     hide() {
       this.$refs.modal.hide();
     },
     emit() {
-      this.$emit("newCustomerPainDescribed", {
-        id: uuidv4(),
-        parentId: this.parentId,
-        type: "Customer Pain",
-        description: this.description,
-      });
+      if (this.customerPainToEdit) {
+        this.customerPainToEdit.description = this.description;
+        this.$emit("customerPainRedescribed", this.customerPainToEdit);
+      } else {
+        this.$emit("newCustomerPainDescribed", {
+          id: uuidv4(),
+          parentId: this.parentId,
+          type: "Customer Pain",
+          description: this.description,
+        });
+      }
     },
   },
   data() {
     return {
       description: "",
       parentId: "",
+      customerPainToEdit: null
     };
   },
 };
