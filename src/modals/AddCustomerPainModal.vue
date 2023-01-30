@@ -36,7 +36,7 @@ export default {
     return {
       description: "",
       parentIds: [""],
-      customerPainToEdit: null
+      customerPainToEdit: null,
     };
   },
 };

@@ -53,7 +53,9 @@ export default {
     showForEdit(painRelieverToEdit) {
       this.painRelieverToEdit = painRelieverToEdit;
       this.description = this.painRelieverToEdit.description;
-      this.relatesTo = this.painRelieverToEdit.relatesTo.map(p => this.customerPains.find(q => q.id === p));
+      this.relatesTo = this.painRelieverToEdit.relatesTo.map((p) =>
+        this.customerPains.find((q) => q.id === p)
+      );
       this.$refs.modal.show();
     },
     hide() {
@@ -80,7 +82,7 @@ export default {
       description: "",
       relatesTo: [],
       parentIds: [""],
-      painRelieverToEdit: null
+      painRelieverToEdit: null,
     };
   },
 };

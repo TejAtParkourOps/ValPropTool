@@ -87,7 +87,10 @@
                 $refs.AddProductOrServiceModal.showForEdit(selectedItem);
               }
             "
-            v-if="this?.selectedItem?.type === 'Product' || this?.selectedItem?.type === 'Service'"
+            v-if="
+              this?.selectedItem?.type === 'Product' ||
+              this?.selectedItem?.type === 'Service'
+            "
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
@@ -134,7 +137,7 @@
             v-if="this?.selectedItem?.type === 'Pain Reliever'"
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
-          >          
+          >
           <b-list-group-item
             href="#"
             @click="
@@ -156,7 +159,7 @@
             v-if="this?.selectedItem?.type === 'Message'"
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
-          >          
+          >
           <!-- Add Options -->
           <b-list-group-item
             href="#"
@@ -262,7 +265,7 @@
           this?.hoveredItem?.type === 'Message' ? 'white' : undefined
         "
       >
-        <p class="m-0" style="font-size: 0.7rem; max-width: 500px;">
+        <p class="m-0" style="font-size: 0.7rem; max-width: 500px">
           {{ this?.hoveredItem?.description }}
         </p>
       </b-card>
@@ -286,17 +289,21 @@
     />
     <AddIdealCustomerProfileModal
       ref="AddIdealCustomerProfileModal"
-      @newIdealCustomerProfileDescribed="(x) => newNode('IdealCustomerProfiles', x)"
-      @idealCustomerProfileRedescribed="(x) => updateNode('IdealCustomerProfiles', x)"
+      @newIdealCustomerProfileDescribed="
+        (x) => newNode('IdealCustomerProfiles', x)
+      "
+      @idealCustomerProfileRedescribed="
+        (x) => updateNode('IdealCustomerProfiles', x)
+      "
     />
     <AddProductOrServiceModal
       ref="AddProductOrServiceModal"
       @newProductOrServiceDescribed="(x) => newNode('ProductsAndServices', x)"
       @productOrServiceRedescribed="(x) => updateNode('ProductsAndServices', x)"
     />
-    <AddMessageModal 
-      ref="AddMessageModal" 
-      @newMessageDescribed="(x) => newNode('Messages', x)" 
+    <AddMessageModal
+      ref="AddMessageModal"
+      @newMessageDescribed="(x) => newNode('Messages', x)"
       @messageRedescribed="(x) => updateNode('Messages', x)"
     />
     <AddPainRelieverModal
@@ -390,8 +397,7 @@ export default {
     newNode(collection, item, verbose = true) {
       this[collection].push(item);
       this.selectedItem = null;
-      if (verbose)
-        console.debug(`new ${item.type} added: ${item.id}`);
+      if (verbose) console.debug(`new ${item.type} added: ${item.id}`);
     },
     deleteNode(collection, item, verbose = true) {
       this.$set(
@@ -400,8 +406,7 @@ export default {
         this[collection].filter((x) => x.id !== item.id)
       );
       this.selectedItem = null;
-      if (verbose)
-        console.debug(`${item.type} deleted: ${item.id}`);
+      if (verbose) console.debug(`${item.type} deleted: ${item.id}`);
     },
     updateNode(collection, updatedItem, verbose = true) {
       this.deleteNode(collection, updatedItem, false);
@@ -446,7 +451,7 @@ export default {
         .classed("pain-line", (l) => {
           const source = this.nodes.find((n) => n.id === l.source);
           const target = this.nodes.find((n) => n.id === l.target);
-          console.log(l.target)
+          console.log(l.target);
           const sourceIsPainReliever = source.type === "Pain Reliever";
           const sourceIsMsg = source.type === "Message";
           const targetIsCustomerPain = target.type === "Customer Pain";
@@ -481,7 +486,7 @@ export default {
         .classed("cp", (n) => n.type === "Customer Pain")
         .classed("product", (n) => n.type === "Product")
         .classed("service", (n) => n.type === "Service")
-        // TODO: 
+        // TODO:
         // .classed("msg-pain", (n) => {
         //   const isMsg = n.type === "Message";
         //   const parentNode = this.nodes.find((_n) => _n.id === n.parentId);

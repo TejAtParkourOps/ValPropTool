@@ -20,10 +20,10 @@ export default {
     },
     emit() {
       if (this.customerGainToEdit) {
-          this.customerGainToEdit.description = this.description;
-          this.$emit("customerGainRedescribed", this.customerGainToEdit);
+        this.customerGainToEdit.description = this.description;
+        this.$emit("customerGainRedescribed", this.customerGainToEdit);
       } else {
-          this.$emit("newCustomerGainDescribed", {
+        this.$emit("newCustomerGainDescribed", {
           id: uuidv4(),
           parentIds: this.parentIds,
           type: "Customer Gain",
@@ -36,7 +36,7 @@ export default {
     return {
       description: "",
       parentIds: [""],
-      customerGainToEdit: null
+      customerGainToEdit: null,
     };
   },
 };

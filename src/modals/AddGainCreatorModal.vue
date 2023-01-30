@@ -53,7 +53,9 @@ export default {
     showForEdit(gainCreatorToEdit) {
       this.gainCreatorToEdit = gainCreatorToEdit;
       this.description = this.gainCreatorToEdit.description;
-      this.relatesTo = this.gainCreatorToEdit.relatesTo.map(g => this.customerGains.find(h => h.id === g));
+      this.relatesTo = this.gainCreatorToEdit.relatesTo.map((g) =>
+        this.customerGains.find((h) => h.id === g)
+      );
       this.$refs.modal.show();
     },
     hide() {
@@ -80,7 +82,7 @@ export default {
       description: "",
       relatesTo: [],
       parentIds: [""],
-      gainCreatorToEdit: null
+      gainCreatorToEdit: null,
     };
   },
 };

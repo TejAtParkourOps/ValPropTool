@@ -38,7 +38,7 @@ export default {
       description: "",
       type: "Product",
       typeOptions: ["Product", "Service"],
-      productOrServiceToEdit: null
+      productOrServiceToEdit: null,
     };
   },
 };
@@ -48,7 +48,11 @@ export default {
   <b-modal
     ref="modal"
     no-close-on-backdrop
-    :title="productOrServiceToEdit ? 'Edit Product or Service' : 'Add Product or Service'"
+    :title="
+      productOrServiceToEdit
+        ? 'Edit Product or Service'
+        : 'Add Product or Service'
+    "
     @ok="emit"
     :ok-disabled="description.length < 1"
   >
