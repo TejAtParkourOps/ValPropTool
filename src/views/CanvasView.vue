@@ -262,7 +262,7 @@
           this?.hoveredItem?.type === 'Message' ? 'white' : undefined
         "
       >
-        <p class="m-0" style="font-size: 0.7rem">
+        <p class="m-0" style="font-size: 0.7rem; max-width: 500px;">
           {{ this?.hoveredItem?.description }}
         </p>
       </b-card>
@@ -271,44 +271,44 @@
     <TextboxPromptModal ref="TextboxPromptModal" />
     <AddCustomerJobModal
       ref="addCustomerJobModal"
-      @newCustomerJobDescribed="newCustomerJob"
-      @customerJobRedescribed="updateCustomerJob"
+      @newCustomerJobDescribed="(x) => newNode('CustomerJobs', x)"
+      @customerJobRedescribed="(x) => updateNode('CustomerJobs', x)"
     />
     <AddCustomerGainModal
       ref="AddCustomerGainModal"
-      @newCustomerGainDescribed="newCustomerGain"
-      @customerGainRedescribed="updateCustomerGain"
+      @newCustomerGainDescribed="(x) => newNode('Gains', x)"
+      @customerGainRedescribed="(x) => updateNode('Gains', x)"
     />
     <AddCustomerPainModal
       ref="AddCustomerPainModal"
-      @newCustomerPainDescribed="newCustomerPain"
-      @customerPainRedescribed="updateCustomerPain"
+      @newCustomerPainDescribed="(x) => newNode('Pains', x)"
+      @customerPainRedescribed="(x) => updateNode('Pains', x)"
     />
     <AddIdealCustomerProfileModal
       ref="AddIdealCustomerProfileModal"
-      @newIdealCustomerProfileDescribed="newIdealCustomerProfile"
-      @idealCustomerProfileRedescribed="updateIdealCustomerProfile"
+      @newIdealCustomerProfileDescribed="(x) => newNode('IdealCustomerProfiles', x)"
+      @idealCustomerProfileRedescribed="(x) => updateNode('IdealCustomerProfiles', x)"
     />
     <AddProductOrServiceModal
       ref="AddProductOrServiceModal"
-      @newProductOrServiceDescribed="newProductOrService"
-      @productOrServiceRedescribed="updateProductOrService"
+      @newProductOrServiceDescribed="(x) => newNode('ProductsAndServices', x)"
+      @productOrServiceRedescribed="(x) => updateNode('ProductsAndServices', x)"
     />
     <AddMessageModal 
       ref="AddMessageModal" 
-      @newMessageDescribed="newMessage" 
-      @messageRedescribed="updateMessage"
+      @newMessageDescribed="(x) => newNode('Messages', x)" 
+      @messageRedescribed="(x) => updateNode('Messages', x)"
     />
     <AddPainRelieverModal
       ref="AddPainRelieverModal"
-      @newPainRelieverDescribed="newPainReliever"
-      @painRelieverRedescribed="updatePainReliever"
+      @newPainRelieverDescribed="(x) => newNode('PainRelievers', x)"
+      @painRelieverRedescribed="(x) => updateNode('PainRelievers', x)"
       :customer-pains="Pains"
     />
     <AddGainCreatorModal
       ref="AddGainCreatorModal"
-      @newGainCreatorDescribed="newGainCreator"
-      @gainCreatorRedescribed="updateGainCreator"
+      @newGainCreatorDescribed="(x) => newNode('GainCreators', x)"
+      @gainCreatorRedescribed="(x) => updateNode('GainCreators', x)"
       :customer-gains="Gains"
     />
   </div>
@@ -387,109 +387,28 @@ export default {
     };
   },
   methods: {
-    newCustomerJob(job) {
-      this.CustomerJobs.push(job);
+    newNode(collection, item, verbose = true) {
+      this[collection].push(item);
       this.selectedItem = null;
+      if (verbose)
+        console.debug(`new ${item.type} added: ${item.id}`);
     },
-    newCustomerGain(gain) {
-      this.Gains.push(gain);
-      this.selectedItem = null;
-    },
-    newCustomerPain(pain) {
-      this.Pains.push(pain);
-      this.selectedItem = null;
-    },
-    newIdealCustomerProfile(icp) {
-      this.IdealCustomerProfiles.push(icp);
-      this.selectedItem = null;
-    },
-    newProductOrService(productOrService) {
-      this.ProductsAndServices.push(productOrService);
-      this.selectedItem = null;
-    },
-    newMessage(message) {
-      this.Messages.push(message);
-      this.selectedItem = null;
-    },
-    newPainReliever(painReliever) {
-      this.PainRelievers.push(painReliever);
-      this.selectedItem = null;
-    },
-    newGainCreator(gainCreator) {
-      this.GainCreators.push(gainCreator);
-      this.selectedItem = null;
-    },
-    updateIdealCustomerProfile(updatedIcp) {
+    deleteNode(collection, item, verbose = true) {
       this.$set(
         this,
-        "IdealCustomerProfiles",
-        this.IdealCustomerProfiles.filter((icp) => icp.id !== updatedIcp.id)
+        collection,
+        this[collection].filter((x) => x.id !== item.id)
       );
-      this.IdealCustomerProfiles.push(updatedIcp);
       this.selectedItem = null;
+      if (verbose)
+        console.debug(`${item.type} deleted: ${item.id}`);
     },
-    updateProductOrService(updatedProductOrService) {
-      this.$set(
-        this,
-        "ProductsAndServices",
-        this.ProductsAndServices.filter((pOrS) => pOrS.id !== updatedProductOrService.id)
-      );
-      this.ProductsAndServices.push(updatedProductOrService);
+    updateNode(collection, updatedItem, verbose = true) {
+      this.deleteNode(collection, updatedItem, false);
+      this.newNode(collection, updatedItem, false);
       this.selectedItem = null;
-    },
-    updateCustomerJob(updatedCustomerJob) {
-      this.$set(
-        this,
-        "CustomerJobs",
-        this.CustomerJobs.filter((cj) => cj.id !== updatedCustomerJob.id)
-      );
-      this.CustomerJobs.push(updatedCustomerJob);
-      this.selectedItem = null;
-    },
-    updateCustomerPain(updatedCustomerPain) {
-      this.$set(
-        this,
-        "Pains",
-        this.Pains.filter((cp) => cp.id !== updatedCustomerPain.id)
-      );
-      this.Pains.push(updatedCustomerPain);
-      this.selectedItem = null;
-    },
-    updateCustomerGain(updatedCustomerGain) {
-      this.$set(
-        this,
-        "Gains",
-        this.Gains.filter((cg) => cg.id !== updatedCustomerGain.id)
-      );
-      this.Gains.push(updatedCustomerGain);
-      this.selectedItem = null;
-    },
-    updatePainReliever(updatedPainReliever) {
-      this.$set(
-        this,
-        "PainRelievers",
-        this.PainRelievers.filter((pr) => pr.id !== updatedPainReliever.id)
-      );
-      this.PainRelievers.push(updatedPainReliever);
-      this.selectedItem = null;
-    },
-    updateGainCreator(updatedGainCreator) {
-      this.$set(
-        this,
-        "GainCreators",
-        this.GainCreators.filter((gc) => gc.id !== updatedGainCreator.id)
-      );
-      this.GainCreators.push(updatedGainCreator);
-      this.selectedItem = null;
-    },
-    updateMessage(updatedMessage) {
-      this.$set(
-        this,
-        "Messages",
-        this.Messages.filter((m) => m.id !== updatedMessage.id)
-      );
-      this.Messages.push(updatedMessage);
-      this.selectedItem = null;
+      if (verbose)
+        console.debug(`${updatedItem.type} updated: ${updatedItem.id}`);
     },
     changeName() {
       if (this.routePropositionId && !this.isOwner) return;
@@ -1029,6 +948,7 @@ export default {
   // overflow: scroll;
   height: 100vh;
   width: 100%;
+  overflow: hidden;
   #canvas {
     height: 100%;
     width: 100%;
