@@ -2,13 +2,12 @@
   <div>
     <!-- Canvas Header -->
     <div class="d-flex flex-row p-4 justify-content-between">
-      <div id="toolbar">
+      <div class="d-flex flex-row align-items-start" style="gap: 0.25rem">
         <b-button
           variant="primary"
-          class="mr-1"
           @click="
             () => {
-              $refs.AddIdealCustomerProfileModal.show();
+              $refs.addIdealCustomerProfileModal.showForAdd();
             }
           "
           :disabled="routePropositionId && !isOwner"
@@ -16,35 +15,23 @@
         >
         <b-button
           variant="primary"
-          class="mr-1"
-          @click="() => $refs.AddProductOrServiceModal.showForAdd()"
+          @click="() => $refs.addProductModal.showForAdd()"
           :disabled="routePropositionId && !isOwner"
-          >Add Product/Service</b-button
+          >Add Product</b-button
         >
         <b-button
-          variant="secondary"
-          class="mr-1"
+          variant="primary"
+          @click="() => $refs.addServiceModal.showForAdd()"
+          :disabled="routePropositionId && !isOwner"
+          >Add Service</b-button
+        >
+
+        <b-button
           @click="save"
-          :disabled="nodes.length < 1"
-          v-if="!routePropositionId"
+          :disabled="nodes.length < 1 || !!routePropositionId"
           >Save</b-button
         >
-        <div
-          v-else
-          v-b-tooltip.hover.bottom
-          :title="isOwner ? 'Auto-saving' : undefined"
-          class="d-inline-block"
-        >
-          <b-button variant="secondary" class="mr-1" disabled>Save</b-button>
-        </div>
-        <!-- <b-button variant="primary" class="mr-1" @click="share" :disabled="nodes.length < 1">Share</b-button> -->
-        <b-button
-          variant="secondary"
-          class="mr-1"
-          @click="reset"
-          :disabled="nodes.length < 1 || !isOwner"
-          >Reset</b-button
-        >
+        <b-button @click="reset" :disabled="nodes.length < 1">Reset</b-button>
       </div>
       <div>
         <h2
@@ -73,7 +60,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddIdealCustomerProfileModal.show(selectedItem);
+                $refs.addIdealCustomerProfileModal.showForEdit(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Ideal Customer Profile'"
@@ -84,13 +71,21 @@
             href="#"
             @click="
               () => {
-                $refs.AddProductOrServiceModal.showForEdit(selectedItem);
+                $refs.addProductModal.showForEdit(selectedItem);
               }
             "
-            v-if="
-              this?.selectedItem?.type === 'Product' ||
-              this?.selectedItem?.type === 'Service'
+            v-if="this?.selectedItem?.type === 'Product'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.addServiceModal.showForEdit(selectedItem);
+              }
             "
+            v-if="this?.selectedItem?.type === 'Service'"
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
@@ -109,7 +104,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddCustomerPainModal.showForEdit(selectedItem);
+                $refs.addCustomerPainModal.showForEdit(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Customer Pain'"
@@ -120,7 +115,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddCustomerGainModal.showForEdit(selectedItem);
+                $refs.addCustomerGainModal.showForEdit(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Customer Gain'"
@@ -131,7 +126,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddPainRelieverModal.showForEdit(selectedItem);
+                $refs.addPainRelieverModal.showForEdit(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Pain Reliever'"
@@ -142,7 +137,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddGainCreatorModal.showForEdit(selectedItem);
+                $refs.addGainCreatorModal.showForEdit(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Gain Creator'"
@@ -153,10 +148,21 @@
             href="#"
             @click="
               () => {
-                $refs.AddMessageModal.showForEdit(selectedItem);
+                $refs.addPainRelieverMessageModal.showForEdit(selectedItem);
               }
             "
-            v-if="this?.selectedItem?.type === 'Message'"
+            v-if="this?.selectedItem?.type === 'Pain Message'"
+            :disabled="routePropositionId && !isOwner"
+            >Edit</b-list-group-item
+          >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.addGainCreatorMessageModal.showForEdit(selectedItem);
+              }
+            "
+            v-if="this?.selectedItem?.type === 'Gain Message'"
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
@@ -165,7 +171,7 @@
             href="#"
             @click="
               () => {
-                $refs.addCustomerJobModal.showForAdd(selectedItem.id);
+                $refs.addCustomerJobModal.showForAdd(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Ideal Customer Profile'"
@@ -176,7 +182,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddCustomerPainModal.showForAdd(selectedItem.id);
+                $refs.addCustomerPainModal.showForAdd(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Customer Job'"
@@ -187,7 +193,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddCustomerGainModal.showForAdd(selectedItem.id);
+                $refs.addCustomerGainModal.showForAdd(selectedItem);
               }
             "
             v-if="this?.selectedItem?.type === 'Customer Job'"
@@ -198,7 +204,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddPainRelieverModal.showForAdd(selectedItem.id);
+                $refs.addPainRelieverModal.showForAdd(selectedItem);
               }
             "
             v-if="
@@ -212,7 +218,7 @@
             href="#"
             @click="
               () => {
-                $refs.AddGainCreatorModal.showForAdd(selectedItem.id);
+                $refs.addGainCreatorModal.showForAdd(selectedItem);
               }
             "
             v-if="
@@ -226,13 +232,21 @@
             href="#"
             @click="
               () => {
-                $refs.AddMessageModal.showForAdd(selectedItem.id);
+                $refs.addPainRelieverMessageModal.showForAdd(selectedItem);
               }
             "
-            v-if="
-              this?.selectedItem?.type === 'Pain Reliever' ||
-              this?.selectedItem?.type === 'Gain Creator'
+            v-if="this?.selectedItem?.type === 'Pain Reliever'"
+            :disabled="routePropositionId && !isOwner"
+            >Add Message</b-list-group-item
+          >
+          <b-list-group-item
+            href="#"
+            @click="
+              () => {
+                $refs.addGainCreatorMessageModal.showForAdd(selectedItem);
+              }
             "
+            v-if="this?.selectedItem?.type === 'Gain Creator'"
             :disabled="routePropositionId && !isOwner"
             >Add Message</b-list-group-item
           >
@@ -241,7 +255,7 @@
             href="#"
             @click="
               () => {
-                deleteItem(selectedItem);
+                deleteNode(selectedItem);
               }
             "
             :disabled="routePropositionId && !isOwner"
@@ -270,68 +284,164 @@
         </p>
       </b-card>
     </div>
-    <!-- Modals -->
+    <!-- Modal: add/edit ICP -->
     <TextboxPromptModal ref="TextboxPromptModal" />
-    <AddCustomerJobModal
+    <AddNodeModal
+      ref="addIdealCustomerProfileModal"
+      type="Ideal Customer Profile"
+      @itemDescribed="(n) => newNode('IdealCustomerProfiles', n)"
+      @itemRedescribed="(n) => updateNode('IdealCustomerProfiles', n)"
+    >
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Customer Job -->
+    <AddNodeModal
       ref="addCustomerJobModal"
-      @newCustomerJobDescribed="(x) => newNode('CustomerJobs', x)"
-      @customerJobRedescribed="(x) => updateNode('CustomerJobs', x)"
-    />
-    <AddCustomerGainModal
-      ref="AddCustomerGainModal"
-      @newCustomerGainDescribed="(x) => newNode('Gains', x)"
-      @customerGainRedescribed="(x) => updateNode('Gains', x)"
-    />
-    <AddCustomerPainModal
-      ref="AddCustomerPainModal"
-      @newCustomerPainDescribed="(x) => newNode('Pains', x)"
-      @customerPainRedescribed="(x) => updateNode('Pains', x)"
-    />
-    <AddIdealCustomerProfileModal
-      ref="AddIdealCustomerProfileModal"
-      @newIdealCustomerProfileDescribed="
-        (x) => newNode('IdealCustomerProfiles', x)
-      "
-      @idealCustomerProfileRedescribed="
-        (x) => updateNode('IdealCustomerProfiles', x)
-      "
-    />
-    <AddProductOrServiceModal
-      ref="AddProductOrServiceModal"
-      @newProductOrServiceDescribed="(x) => newNode('ProductsAndServices', x)"
-      @productOrServiceRedescribed="(x) => updateNode('ProductsAndServices', x)"
-    />
-    <AddMessageModal
-      ref="AddMessageModal"
-      @newMessageDescribed="(x) => newNode('Messages', x)"
-      @messageRedescribed="(x) => updateNode('Messages', x)"
-    />
-    <AddPainRelieverModal
-      ref="AddPainRelieverModal"
-      @newPainRelieverDescribed="(x) => newNode('PainRelievers', x)"
-      @painRelieverRedescribed="(x) => updateNode('PainRelievers', x)"
-      :customer-pains="Pains"
-    />
-    <AddGainCreatorModal
-      ref="AddGainCreatorModal"
-      @newGainCreatorDescribed="(x) => newNode('GainCreators', x)"
-      @gainCreatorRedescribed="(x) => updateNode('GainCreators', x)"
-      :customer-gains="Gains"
-    />
+      type="Customer Job"
+      is-child
+      :parent-options="IdealCustomerProfiles"
+      @itemDescribed="(n) => newNode('CustomerJobs', n)"
+      @itemRedescribed="(n) => updateNode('CustomerJobs', n)"
+    >
+      <template v-slot:label-parents>
+        <p>How...</p>
+      </template>
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Customer Pain -->
+    <AddNodeModal
+      ref="addCustomerPainModal"
+      type="Customer Pain"
+      is-child
+      :parent-options="CustomerJobs"
+      @itemDescribed="(n) => newNode('Pains', n)"
+      @itemRedescribed="(n) => updateNode('Pains', n)"
+    >
+      <template v-slot:label-parents>
+        <p>How...</p>
+      </template>
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Customer Pain -->
+    <AddNodeModal
+      ref="addCustomerGainModal"
+      type="Customer Gain"
+      is-child
+      :parent-options="CustomerJobs"
+      @itemDescribed="(n) => newNode('Gains', n)"
+      @itemRedescribed="(n) => updateNode('Gains', n)"
+    >
+      <template v-slot:label-parents>
+        <p>How...</p>
+      </template>
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Product -->
+    <AddNodeModal
+      ref="addProductModal"
+      type="Product"
+      @itemDescribed="(n) => newNode('ProductsAndServices', n)"
+      @itemRedescribed="(n) => updateNode('ProductsAndServices', n)"
+    >
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Service -->
+    <AddNodeModal
+      ref="addServiceModal"
+      type="Service"
+      @itemDescribed="(n) => newNode('ProductsAndServices', n)"
+      @itemRedescribed="(n) => updateNode('ProductsAndServices', n)"
+    >
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Pain Reliever -->
+    <AddNodeModal
+      ref="addPainRelieverModal"
+      type="Pain Reliever"
+      is-child
+      :parent-options="ProductsAndServices"
+      is-relation
+      :relation-options="Pains"
+      @itemDescribed="(n) => newNode('PainRelievers', n)"
+      @itemRedescribed="(n) => updateNode('PainRelievers', n)"
+    >
+      <template v-slot:label-parents>
+        <p>How...</p>
+      </template>
+      <template v-slot:relationIds>
+        <p>How...</p>
+      </template>
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Gain Creators -->
+    <AddNodeModal
+      ref="addGainCreatorModal"
+      type="Gain Creator"
+      is-child
+      :parent-options="ProductsAndServices"
+      is-relation
+      :relation-options="Gains"
+      @itemDescribed="(n) => newNode('GainCreators', n)"
+      @itemRedescribed="(n) => updateNode('GainCreators', n)"
+    >
+      <template v-slot:label-parents>
+        <p>How...</p>
+      </template>
+      <template v-slot:relationIds>
+        <p>How...</p>
+      </template>
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <!-- Modal: add/edit Message -->
+    <AddNodeModal
+      ref="addPainRelieverMessageModal"
+      type="Pain Message"
+      is-child
+      :parent-options="PainRelievers"
+      :allow-change-parents="false"
+      @itemDescribed="(n) => newNode('Messages', n)"
+      @itemRedescribed="(n) => updateNode('Messages', n)"
+    >
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
+    <AddNodeModal
+      ref="addGainCreatorMessageModal"
+      type="Gain Message"
+      is-child
+      :parent-options="GainCreators"
+      :allow-change-parents="false"
+      @itemDescribed="(n) => newNode('Messages', n)"
+      @itemRedescribed="(n) => updateNode('Messages', n)"
+    >
+      <template v-slot:label-description>
+        <p>How...</p>
+      </template>
+    </AddNodeModal>
   </div>
 </template>
 
 <script>
 import { useUserInfo } from "@/plugins/userInfo";
 import { writeItem, readItem } from "@/plugins/firebase";
-import AddCustomerJobModal from "@/modals/AddCustomerJobModal.vue";
-import AddCustomerGainModal from "@/modals/AddCustomerGainModal.vue";
-import AddCustomerPainModal from "@/modals/AddCustomerPainModal.vue";
-import AddIdealCustomerProfileModal from "@/modals/AddIdealCustomerProfileModal.vue";
-import AddProductOrServiceModal from "@/modals/AddProductOrServiceModal.vue";
-import AddMessageModal from "@/modals/AddMessageModal.vue";
-import AddPainRelieverModal from "@/modals/AddPainRelieverModal.vue";
-import AddGainCreatorModal from "@/modals/AddGainCreatorModal.vue";
+import AddNodeModal from "@/modals/AddNodeModal.vue";
 import * as d3 from "d3";
 import { uuidv4 } from "@firebase/util";
 import TextboxPromptModal from "@/modals/TextboxPromptModal.vue";
@@ -354,15 +464,8 @@ function monitorEvents(element) {
 export default {
   name: "CanvasView",
   components: {
-    AddCustomerJobModal,
-    AddCustomerGainModal,
-    AddCustomerPainModal,
-    AddIdealCustomerProfileModal,
-    AddProductOrServiceModal,
+    AddNodeModal,
     TextboxPromptModal,
-    AddMessageModal,
-    AddPainRelieverModal,
-    AddGainCreatorModal,
   },
   setup() {
     const userInfoStore = useUserInfo();
@@ -397,19 +500,77 @@ export default {
     newNode(collection, item, verbose = true) {
       this[collection].push(item);
       this.selectedItem = null;
-      if (verbose) console.debug(`new ${item.type} added: ${item.id}`);
+      if (verbose) console.debug(`New ${item.type} added: ${item.id}`);
     },
-    deleteNode(collection, item, verbose = true) {
-      this.$set(
-        this,
-        collection,
-        this[collection].filter((x) => x.id !== item.id)
+    async deleteNode(item, verbose = true) {
+      const _deleteNode = (item, verbose) => {
+        this.innerDeleteNode(item);
+        this.selectedItem = null;
+        if (verbose) console.debug(`${item.type} deleted: ${item.id}`);
+      };
+      if (verbose) {
+        const userConfirmation = await this.$bvModal.msgBoxConfirm(
+          "Are you sure you want to delete this item?",
+          {
+            okTitle: "Yes",
+            cancelTitle: "No",
+          }
+        );
+        if (userConfirmation) {
+          _deleteNode(item, verbose);
+        }
+      } else {
+        _deleteNode(item, verbose);
+      }
+    },
+    innerDeleteNode(item) {
+      const forEachNodeArray = (funct) =>
+        [
+          "IdealCustomerProfiles",
+          "CustomerJobs",
+          "Gains",
+          "Pains",
+          "ProductsAndServices",
+          "GainCreators",
+          "PainRelievers",
+          "Messages",
+        ].forEach((arrKey) => {
+          funct(arrKey);
+        });
+      // delete all exclusive child elements
+      const exclusiveChildElements = this.nodes.filter(
+        (n) => n?.parentIds?.length === 1 && n?.parentIds?.includes(item.id)
       );
-      this.selectedItem = null;
-      if (verbose) console.debug(`${item.type} deleted: ${item.id}`);
+      exclusiveChildElements.forEach((n) => this.innerDeleteNode(n));
+      // delete all links to this item
+      forEachNodeArray((arrKey) =>
+        this.$set(
+          this,
+          arrKey,
+          this[arrKey].map((i) => {
+            // child nodes
+            if (i?.parentIds?.includes(item.id)) {
+              i.parentIds = i.parentIds.filter((j) => j !== item.id);
+            }
+            // relations
+            if (i?.relationIds?.includes(item.id)) {
+              i.relationIds = i.relationIds.filter((j) => j !== item.id);
+            }
+            return i;
+          })
+        )
+      );
+      // delete this node from whichever array is belongs to
+      forEachNodeArray((arrKey) =>
+        this.$set(
+          this,
+          arrKey,
+          this[arrKey].filter((i) => i.id !== item.id)
+        )
+      );
     },
     updateNode(collection, updatedItem, verbose = true) {
-      this.deleteNode(collection, updatedItem, false);
+      this.deleteNode(updatedItem, false);
       this.newNode(collection, updatedItem, false);
       this.selectedItem = null;
       if (verbose)
@@ -447,32 +608,34 @@ export default {
         .join("line")
         .attr("pointer-events", "none")
         .attr("stroke-width", "7px")
-        .attr("stroke", "#D4E9FF")
-        .classed("pain-line", (l) => {
-          const source = this.nodes.find((n) => n.id === l.source);
-          const target = this.nodes.find((n) => n.id === l.target);
-          console.log(l.target);
-          const sourceIsPainReliever = source.type === "Pain Reliever";
-          const sourceIsMsg = source.type === "Message";
-          const targetIsCustomerPain = target.type === "Customer Pain";
-          const targetIsPainReliever = target.type === "Pain Reliever";
-          return (
-            (sourceIsPainReliever && targetIsCustomerPain) ||
-            (sourceIsMsg && targetIsPainReliever)
-          );
-        })
-        .classed("gain-line", (l) => {
-          const source = this.nodes.find((n) => n.id === l.source);
-          const target = this.nodes.find((n) => n.id === l.target);
-          const sourceIsGainCreator = source.type === "Gain Creator";
-          const sourceIsMsg = source.type === "Message";
-          const targetIsCustomerGain = target.type === "Customer Gain";
-          const targetIsGainCreator = target.type === "Gain Creator";
-          return (
-            (sourceIsGainCreator && targetIsCustomerGain) ||
-            (sourceIsMsg && targetIsGainCreator)
-          );
-        });
+        .attr("stroke", "#D4E9FF");
+      // .classed("pain-line", (l) => {
+      //   const source = this.nodes.find((n) => n.id === l.source);
+      //   console.log(l.source)
+      //   console.log(l.target);
+      //   const target = this.nodes.find((n) => n.id === l.target);
+
+      //   const sourceIsPainReliever = source.type === "Pain Reliever";
+      //   const sourceIsMsg = source.type === "Message";
+      //   const targetIsCustomerPain = target.type === "Customer Pain";
+      //   const targetIsPainReliever = target.type === "Pain Reliever";
+      //   return (
+      //     (sourceIsPainReliever && targetIsCustomerPain) ||
+      //     (sourceIsMsg && targetIsPainReliever)
+      //   );
+      // })
+      // .classed("gain-line", (l) => {
+      //   const source = this.nodes.find((n) => n.id === l.source);
+      //   const target = this.nodes.find((n) => n.id === l.target);
+      //   const sourceIsGainCreator = source.type === "Gain Creator";
+      //   const sourceIsMsg = source.type === "Message";
+      //   const targetIsCustomerGain = target.type === "Customer Gain";
+      //   const targetIsGainCreator = target.type === "Gain Creator";
+      //   return (
+      //     (sourceIsGainCreator && targetIsCustomerGain) ||
+      //     (sourceIsMsg && targetIsGainCreator)
+      //   );
+      // });
 
       const _wrapperElements = this._graphContent
         .append("g")
@@ -486,22 +649,10 @@ export default {
         .classed("cp", (n) => n.type === "Customer Pain")
         .classed("product", (n) => n.type === "Product")
         .classed("service", (n) => n.type === "Service")
-        // TODO:
-        // .classed("msg-pain", (n) => {
-        //   const isMsg = n.type === "Message";
-        //   const parentNode = this.nodes.find((_n) => _n.id === n.parentId);
-        //   const parentNodeIsPainReliever = parentNode?.type === "Pain Reliever";
-        //   return isMsg && parentNodeIsPainReliever;
-        // })
-        // .classed("msg-gain", (n) => {
-        //   const isMsg = n.type === "Message";
-        //   const parentNode = this.nodes.find((_n) => _n.id === n.parentId);
-        //   const parentNodeIsGainCreator = parentNode?.type === "Gain Creator";
-        //   return isMsg && parentNodeIsGainCreator;
-        // })
+        .classed("msg-pain", (n) => n.type === "Pain Message")
+        .classed("msg-gain", (n) => n.type === "Gain Message")
         .classed("pr", (n) => n.type === "Pain Reliever")
         .classed("gc", (n) => n.type === "Gain Creator");
-
       this._circleElements = _wrapperElements
         .append("circle")
         .attr("r", 60)
@@ -624,64 +775,6 @@ export default {
             .attr("y1", (l) => l.source.y)
             .attr("x2", (l) => l.target.x)
             .attr("y2", (l) => l.target.y);
-        });
-    },
-    forEachNodeArray(funct) {
-      [
-        "IdealCustomerProfiles",
-        "CustomerJobs",
-        "Gains",
-        "Pains",
-        "ProductsAndServices",
-        "GainCreators",
-        "PainRelievers",
-        "Messages",
-      ].forEach((arrKey) => {
-        funct(arrKey);
-      });
-    },
-    innerDelete(item) {
-      // delete all direct child elements
-      // let childNode = this.nodes.filter((n) => n.parentId === item.id);
-      // childNode.forEach((n) => this.innerDelete(n));
-      // delete all links to this item
-      this.forEachNodeArray((arrKey) =>
-        this.$set(
-          this,
-          arrKey,
-          this[arrKey].map((i) => {
-            // child nodes
-            if (i?.parentIds?.includes(item.id)) {
-              i.parentIds = i.parentIds.filter((j) => j !== item.id);
-            }
-            // relations
-            if (i?.relatesTo?.includes(item.id)) {
-              i.relatesTo = i.relatesTo.filter((j) => j !== item.id);
-            }
-            return i;
-          })
-        )
-      );
-      // delete this element
-      this.forEachNodeArray((arrKey) =>
-        this.$set(
-          this,
-          arrKey,
-          this[arrKey].filter((i) => i.id !== item.id)
-        )
-      );
-    },
-    deleteItem(item) {
-      this.$bvModal
-        .msgBoxConfirm("Are you sure you want to delete this item?", {
-          okTitle: "Yes",
-          cancelTitle: "No",
-        })
-        .then((val) => {
-          if (val === true) {
-            this.innerDelete(item);
-            this.selectedItem = null;
-          }
         });
     },
     async save() {
@@ -870,18 +963,18 @@ export default {
       const links = [];
       this.nodes.forEach((node) => {
         if (node.parentIds) {
-          for (let parent of node.parentIds) {
+          for (let parentId of node.parentIds) {
             links.push({
               source: node.id,
-              target: parent,
+              target: parentId,
             });
           }
         }
-        if (node.relatesTo && Array.isArray(node.relatesTo)) {
-          for (let relation of node.relatesTo) {
+        if (node.relationIds && Array.isArray(node.relationIds)) {
+          for (let relationId of node.relationIds) {
             links.push({
               source: node.id,
-              target: relation,
+              target: relationId,
             });
           }
         }
