@@ -1060,16 +1060,11 @@ export default {
 
 <style lang="scss">
 #canvas-wrapper {
-  // overflow: scroll;
   height: 100vh;
   width: 100%;
-  overflow: hidden;
   #canvas {
     height: 100%;
     width: 100%;
-    // :not(g) {
-    //     pointer-events: none;
-    // }
   }
 }
 
