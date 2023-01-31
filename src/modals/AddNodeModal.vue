@@ -7,7 +7,7 @@
     :ok-disabled="!description || description.length < 1"
   >
     <!-- parents -->
-    <div v-if="isChild && allowChangeParents && parentOptions.length > 1">
+    <div v-if="isChild && allowChangeParents && parentOptions.length > 0">
       <slot name="label-parents" />
       <multiselect
         v-model="parents"
@@ -26,7 +26,7 @@
     </div>
 
     <!-- relations -->
-    <div v-if="isChild && allowChangeRelations && relationOptions.length > 1">
+    <div v-if="isChild && allowChangeRelations && relationOptions.length > 0">
       <slot name="label-relations" />
       <multiselect
         v-model="relations"
@@ -104,8 +104,8 @@ export default {
         ? [parentItem.id].map((p) =>
             this.parentOptions.find((po) => po.id === p)
           )
-        : null;
-      this.relations = this.isRelation ? [] : null;
+        : [];
+      this.relations = [];
       this.description = "";
       this.$refs.modal.show();
     },
@@ -116,12 +116,12 @@ export default {
         ? item.parentIds.map((p) =>
             this.parentOptions.find((po) => po.id === p)
           )
-        : null;
+        : [];
       this.relations = this.isRelation
         ? item.relationIds.map((r) =>
             this.relationOptions.find((ro) => ro.id === r)
           )
-        : null;
+        : [];
       this.description = item.description;
       this.$refs.modal.show();
     },
@@ -130,8 +130,8 @@ export default {
       const obj = {
         id: this.id,
         type: this.type,
-        parentIds: this.parents?.map((p) => p.id),
-        relationIds: this.relations?.map((r) => r.id),
+        parentIds: this.isChild ? this.parents?.map((p) => p.id) : [],
+        relationIds: this.isRelation ? this.relations?.map((r) => r.id) : [],
         description: this.description,
       };
       this.$emit(emitKey, obj);
