@@ -613,34 +613,31 @@ export default {
         .join("line")
         .attr("pointer-events", "none")
         .attr("stroke-width", "7px")
-        .attr("stroke", "#D4E9FF");
-      // .classed("pain-line", (l) => {
-      //   const source = this.nodes.find((n) => n.id === l.source);
-      //   console.log(l.source)
-      //   console.log(l.target);
-      //   const target = this.nodes.find((n) => n.id === l.target);
-
-      //   const sourceIsPainReliever = source.type === "Pain Reliever";
-      //   const sourceIsMsg = source.type === "Message";
-      //   const targetIsCustomerPain = target.type === "Customer Pain";
-      //   const targetIsPainReliever = target.type === "Pain Reliever";
-      //   return (
-      //     (sourceIsPainReliever && targetIsCustomerPain) ||
-      //     (sourceIsMsg && targetIsPainReliever)
-      //   );
-      // })
-      // .classed("gain-line", (l) => {
-      //   const source = this.nodes.find((n) => n.id === l.source);
-      //   const target = this.nodes.find((n) => n.id === l.target);
-      //   const sourceIsGainCreator = source.type === "Gain Creator";
-      //   const sourceIsMsg = source.type === "Message";
-      //   const targetIsCustomerGain = target.type === "Customer Gain";
-      //   const targetIsGainCreator = target.type === "Gain Creator";
-      //   return (
-      //     (sourceIsGainCreator && targetIsCustomerGain) ||
-      //     (sourceIsMsg && targetIsGainCreator)
-      //   );
-      // });
+        .attr("stroke", "#D4E9FF")
+        .classed("pain-line", (l) => {
+        const source = this.nodes.find((n) => n.id === l.source);
+        const target = this.nodes.find((n) => n.id === l.target);
+        const sourceIsPainReliever = source.type === "Pain Reliever";
+        const sourceIsMsg = source.type === "Pain Reliever Message";
+        const targetIsCustomerPain = target.type === "Customer Pain";
+        const targetIsPainReliever = target.type === "Pain Reliever";
+        return (
+          (sourceIsPainReliever && targetIsCustomerPain) ||
+          (sourceIsMsg && targetIsPainReliever)
+        );
+      })
+      .classed("gain-line", (l) => {
+        const source = this.nodes.find((n) => n.id === l.source);
+        const target = this.nodes.find((n) => n.id === l.target);
+        const sourceIsGainCreator = source.type === "Gain Creator";
+        const sourceIsMsg = source.type === "Gain Creator Message";
+        const targetIsCustomerGain = target.type === "Customer Gain";
+        const targetIsGainCreator = target.type === "Gain Creator";
+        return (
+          (sourceIsGainCreator && targetIsCustomerGain) ||
+          (sourceIsMsg && targetIsGainCreator)
+        );
+      });
 
       const _wrapperElements = this._graphContent
         .append("g")
@@ -769,7 +766,7 @@ export default {
           "center",
           d3.forceCenter(window.innerWidth / 2, window.innerHeight / 2)
         )
-        .force("collision", d3.forceCollide().radius(60))
+        .force("collision", d3.forceCollide().radius(70))
         .on("tick", (d) => {
           this._circleElements.attr("cx", (n) => n.x).attr("cy", (n) => n.y);
           this._iconElements
