@@ -486,6 +486,7 @@ export default {
       PainRelievers: [],
       Messages: [],
       Owner: undefined,
+      CreatedDT: new Date().toISOString(),
       _graphContent: null,
       _simulation: null,
       _linkElements: null,
@@ -799,6 +800,8 @@ export default {
           name: this.Name,
           owner: userId,
           published: this.Published,
+          created: this.CreatedDT,
+          lastModified: (new Date()).toISOString(),
           data: {
             IdealCustomerProfiles: this.IdealCustomerProfiles,
             CustomerJobs: this.CustomerJobs,
@@ -809,6 +812,7 @@ export default {
             PainRelievers: this.PainRelievers,
             Messages: this.Messages,
           },
+          schemaVersion: "0.0.0"
         });
         // inform user
         if (!this.routePropositionId) {
@@ -842,6 +846,7 @@ export default {
           const val = snapshot.val();
           console.debug(val);
           this.Name = val?.name ?? "Untitled Project";
+          this.CreatedDT = val?.created;
           this.Published = val?.published ?? false;
           this.IdealCustomerProfiles = val?.data?.IdealCustomerProfiles ?? [];
           this.CustomerJobs = val?.data?.CustomerJobs ?? [];
@@ -903,6 +908,7 @@ export default {
         .then((val) => {
           if (val === true) {
             localStorage.removeItem("tmpSaved");
+            this.Published = false;
             this.IdealCustomerProfiles = [];
             this.CustomerJobs = [];
             this.Pains = [];

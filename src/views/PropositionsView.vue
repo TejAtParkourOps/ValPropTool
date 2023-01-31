@@ -67,6 +67,7 @@
         </template>
       </b-card>
     </div>
+    <TextboxPromptModal ref="textboxPromptModal" />
   </div>
 </template>
 
@@ -181,7 +182,12 @@ export default {
         params: { propositionId: prop.id, ownerId: userId },
       });
     },
-    deleteProp(prop) {
+    async deleteProp(prop) {
+      const userConfirmation = await this.$bvModal.msgBoxConfirm("Are you sure you want to delete this proposition?", {
+          okTitle: "Yes",
+          cancelTitle: "No",
+        });
+      if (!userConfirmation) return;
       const userId = this.userInfoStore.getUserInfo?.uid;
       deleteItem(`users/${userId}/propositions/${prop.id}`)
         .then(() => {
@@ -194,7 +200,7 @@ export default {
     },
     renameProp(prop) {
       const userId = this.userInfoStore.getUserInfo?.uid;
-      this.$refs.TextboxPromptModal.show(
+      this.$refs.textboxPromptModal.show(
         "Rename Proposition",
         undefined,
         "My Awesome Value Prop",
