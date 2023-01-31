@@ -10,28 +10,28 @@
               $refs.addIdealCustomerProfileModal.showForAdd();
             }
           "
-          :disabled="routePropositionId && !isOwner"
+          :disabled="!!routePropositionId && !isOwner"
           >Add ICP</b-button
         >
         <b-button
           variant="primary"
           @click="() => $refs.addProductModal.showForAdd()"
-          :disabled="routePropositionId && !isOwner"
+          :disabled="!!routePropositionId && !isOwner"
           >Add Product</b-button
         >
         <b-button
           variant="primary"
           @click="() => $refs.addServiceModal.showForAdd()"
-          :disabled="routePropositionId && !isOwner"
+          :disabled="!!routePropositionId && !isOwner"
           >Add Service</b-button
         >
 
         <b-button
           @click="save"
           :disabled="nodes.length < 1 || !!routePropositionId"
-          >Save</b-button
+          >{{ routePropositionId && isOwner ? 'Auto-saving' : 'Save' }}</b-button
         >
-        <b-button @click="reset" :disabled="nodes.length < 1">Reset</b-button>
+        <b-button @click="reset" :disabled="nodes.length < 1 || (!!routePropositionId && !isOwner)">Reset</b-button>
       </div>
       <div>
         <h2
@@ -151,7 +151,7 @@
                 $refs.addPainRelieverMessageModal.showForEdit(selectedItem);
               }
             "
-            v-if="this?.selectedItem?.type === 'Pain Message'"
+            v-if="this?.selectedItem?.type === 'Pain Reliever Message'"
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
@@ -162,7 +162,7 @@
                 $refs.addGainCreatorMessageModal.showForEdit(selectedItem);
               }
             "
-            v-if="this?.selectedItem?.type === 'Gain Message'"
+            v-if="this?.selectedItem?.type === 'Gain Creator Message'"
             :disabled="routePropositionId && !isOwner"
             >Edit</b-list-group-item
           >
@@ -293,7 +293,7 @@
       @itemRedescribed="(n) => updateNode('IdealCustomerProfiles', n)"
     >
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>Who is your ideal customer?</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Customer Job -->
@@ -306,10 +306,10 @@
       @itemRedescribed="(n) => updateNode('CustomerJobs', n)"
     >
       <template v-slot:label-parents>
-        <p>How...</p>
+        <p>Which type of customers perform this job?</p>
       </template>
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>Briefly describe the job:</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Customer Pain -->
@@ -322,10 +322,10 @@
       @itemRedescribed="(n) => updateNode('Pains', n)"
     >
       <template v-slot:label-parents>
-        <p>How...</p>
+        <p>Which jobs produce this pain?</p>
       </template>
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>Briefly describe the pain?</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Customer Pain -->
@@ -338,10 +338,10 @@
       @itemRedescribed="(n) => updateNode('Gains', n)"
     >
       <template v-slot:label-parents>
-        <p>How...</p>
+        <p>Which jobs produce this gain?</p>
       </template>
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>Briefly describe the gain?</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Product -->
@@ -352,7 +352,7 @@
       @itemRedescribed="(n) => updateNode('ProductsAndServices', n)"
     >
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>What is this product called?</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Service -->
@@ -363,7 +363,7 @@
       @itemRedescribed="(n) => updateNode('ProductsAndServices', n)"
     >
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>What is this service called?</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Pain Reliever -->
@@ -378,13 +378,13 @@
       @itemRedescribed="(n) => updateNode('PainRelievers', n)"
     >
       <template v-slot:label-parents>
-        <p>How...</p>
+        <p>Which products or services provide this relief?</p>
       </template>
-      <template v-slot:relationIds>
-        <p>How...</p>
+      <template v-slot:label-relations>
+        <p>Which pains does this feature relieve?</p>
       </template>
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>Briefly describe the pain-relieving feature:</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Gain Creators -->
@@ -399,19 +399,19 @@
       @itemRedescribed="(n) => updateNode('GainCreators', n)"
     >
       <template v-slot:label-parents>
-        <p>How...</p>
+        <p>Which products or services provide this gain?</p>
       </template>
-      <template v-slot:relationIds>
-        <p>How...</p>
+      <template v-slot:label-relations>
+        <p>Which gains does this feature produce?</p>
       </template>
       <template v-slot:label-description>
-        <p>How...</p>
+        <p>Briefly describe the gain-creating feature:</p>
       </template>
     </AddNodeModal>
     <!-- Modal: add/edit Message -->
     <AddNodeModal
       ref="addPainRelieverMessageModal"
-      type="Pain Message"
+      type="Pain Reliever Message"
       is-child
       :parent-options="PainRelievers"
       :allow-change-parents="false"
@@ -419,12 +419,12 @@
       @itemRedescribed="(n) => updateNode('Messages', n)"
     >
       <template v-slot:label-description>
-        <p>How...</p>
+        <!-- <p></p> -->
       </template>
     </AddNodeModal>
     <AddNodeModal
       ref="addGainCreatorMessageModal"
-      type="Gain Message"
+      type="Gain Creator Message"
       is-child
       :parent-options="GainCreators"
       :allow-change-parents="false"
@@ -432,7 +432,7 @@
       @itemRedescribed="(n) => updateNode('Messages', n)"
     >
       <template v-slot:label-description>
-        <p>How...</p>
+        <!-- <p></p> -->
       </template>
     </AddNodeModal>
   </div>
@@ -524,9 +524,8 @@ export default {
         _deleteNode(item, verbose);
       }
     },
-    innerDeleteNode(item) {
-      const forEachNodeArray = (funct) =>
-        [
+    forEachNodeArray(funct) {
+      [
           "IdealCustomerProfiles",
           "CustomerJobs",
           "Gains",
@@ -538,13 +537,18 @@ export default {
         ].forEach((arrKey) => {
           funct(arrKey);
         });
+    },        
+    innerDeleteNode(item) {
+
+      
       // delete all exclusive child elements
       const exclusiveChildElements = this.nodes.filter(
         (n) => n?.parentIds?.length === 1 && n?.parentIds?.includes(item.id)
       );
       exclusiveChildElements.forEach((n) => this.innerDeleteNode(n));
+
       // delete all links to this item
-      forEachNodeArray((arrKey) =>
+      this.forEachNodeArray((arrKey) =>
         this.$set(
           this,
           arrKey,
@@ -562,7 +566,7 @@ export default {
         )
       );
       // delete this node from whichever array is belongs to
-      forEachNodeArray((arrKey) =>
+      this.forEachNodeArray((arrKey) =>
         this.$set(
           this,
           arrKey,
@@ -571,7 +575,7 @@ export default {
       );
     },
     updateNode(collection, updatedItem, verbose = true) {
-      this.deleteNode(updatedItem, false);
+      this.$set(this, collection, this[collection].filter((i) => i.id !== updatedItem.id));
       this.newNode(collection, updatedItem, false);
       this.selectedItem = null;
       if (verbose)
@@ -650,8 +654,8 @@ export default {
         .classed("cp", (n) => n.type === "Customer Pain")
         .classed("product", (n) => n.type === "Product")
         .classed("service", (n) => n.type === "Service")
-        .classed("msg-pain", (n) => n.type === "Pain Message")
-        .classed("msg-gain", (n) => n.type === "Gain Message")
+        .classed("msg-pain", (n) => n.type === "Pain Reliever Message")
+        .classed("msg-gain", (n) => n.type === "Gain Creator Message")
         .classed("pr", (n) => n.type === "Pain Reliever")
         .classed("gc", (n) => n.type === "Gain Creator");
       this._circleElements = _wrapperElements
