@@ -7,7 +7,7 @@
     :ok-disabled="!description || description.length < 1"
   >
     <!-- parents -->
-    <div v-if="isChild && allowChangeParents && parentOptions.length > 0">
+    <div v-if="isChild && allowChangeParents">
       <slot name="label-parents" />
       <multiselect
         v-model="parents"
@@ -26,7 +26,7 @@
     </div>
 
     <!-- relations -->
-    <div v-if="isChild && allowChangeRelations && relationOptions.length > 0">
+    <div v-if="isRelation && allowChangeRelations">
       <slot name="label-relations" />
       <multiselect
         v-model="relations"
