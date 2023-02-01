@@ -183,10 +183,13 @@ export default {
       });
     },
     async deleteProp(prop) {
-      const userConfirmation = await this.$bvModal.msgBoxConfirm("Are you sure you want to delete this proposition?", {
+      const userConfirmation = await this.$bvModal.msgBoxConfirm(
+        "Are you sure you want to delete this proposition?",
+        {
           okTitle: "Yes",
           cancelTitle: "No",
-        });
+        }
+      );
       if (!userConfirmation) return;
       const userId = this.userInfoStore.getUserInfo?.uid;
       deleteItem(`users/${userId}/propositions/${prop.id}`)
@@ -200,12 +203,13 @@ export default {
     },
     renameProp(prop) {
       const userId = this.userInfoStore.getUserInfo?.uid;
-      this.$refs.textboxPromptModal.show(
-        "Rename Proposition",
-        undefined,
-        "My Awesome Value Prop",
-        prop.name
-      )
+      this.$refs.textboxPromptModal
+        .show(
+          "Rename Proposition",
+          undefined,
+          "My Awesome Value Prop",
+          prop.name
+        )
         .then((newName) => {
           return updateItem(
             `users/${userId}/propositions/${prop.id}/name`,

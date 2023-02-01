@@ -29,9 +29,15 @@
         <b-button
           @click="save"
           :disabled="nodes.length < 1 || !!routePropositionId"
-          >{{ routePropositionId && isOwner ? 'Auto-saving' : 'Save' }}</b-button
+          >{{
+            routePropositionId && isOwner ? "Auto-saving" : "Save"
+          }}</b-button
         >
-        <b-button @click="reset" :disabled="nodes.length < 1 || (!!routePropositionId && !isOwner)">Reset</b-button>
+        <b-button
+          @click="reset"
+          :disabled="nodes.length < 1 || (!!routePropositionId && !isOwner)"
+          >Reset</b-button
+        >
       </div>
       <div>
         <h2
@@ -526,21 +532,19 @@ export default {
     },
     forEachNodeArray(funct) {
       [
-          "IdealCustomerProfiles",
-          "CustomerJobs",
-          "Gains",
-          "Pains",
-          "ProductsAndServices",
-          "GainCreators",
-          "PainRelievers",
-          "Messages",
-        ].forEach((arrKey) => {
-          funct(arrKey);
-        });
-    },        
+        "IdealCustomerProfiles",
+        "CustomerJobs",
+        "Gains",
+        "Pains",
+        "ProductsAndServices",
+        "GainCreators",
+        "PainRelievers",
+        "Messages",
+      ].forEach((arrKey) => {
+        funct(arrKey);
+      });
+    },
     innerDeleteNode(item) {
-
-      
       // delete all exclusive child elements
       const exclusiveChildElements = this.nodes.filter(
         (n) => n?.parentIds?.length === 1 && n?.parentIds?.includes(item.id)
@@ -575,7 +579,11 @@ export default {
       );
     },
     updateNode(collection, updatedItem, verbose = true) {
-      this.$set(this, collection, this[collection].filter((i) => i.id !== updatedItem.id));
+      this.$set(
+        this,
+        collection,
+        this[collection].filter((i) => i.id !== updatedItem.id)
+      );
       this.newNode(collection, updatedItem, false);
       this.selectedItem = null;
       if (verbose)
@@ -615,29 +623,29 @@ export default {
         .attr("stroke-width", "7px")
         .attr("stroke", "#D4E9FF")
         .classed("pain-line", (l) => {
-        const source = this.nodes.find((n) => n.id === l.source);
-        const target = this.nodes.find((n) => n.id === l.target);
-        const sourceIsPainReliever = source.type === "Pain Reliever";
-        const sourceIsMsg = source.type === "Pain Reliever Message";
-        const targetIsCustomerPain = target.type === "Customer Pain";
-        const targetIsPainReliever = target.type === "Pain Reliever";
-        return (
-          (sourceIsPainReliever && targetIsCustomerPain) ||
-          (sourceIsMsg && targetIsPainReliever)
-        );
-      })
-      .classed("gain-line", (l) => {
-        const source = this.nodes.find((n) => n.id === l.source);
-        const target = this.nodes.find((n) => n.id === l.target);
-        const sourceIsGainCreator = source.type === "Gain Creator";
-        const sourceIsMsg = source.type === "Gain Creator Message";
-        const targetIsCustomerGain = target.type === "Customer Gain";
-        const targetIsGainCreator = target.type === "Gain Creator";
-        return (
-          (sourceIsGainCreator && targetIsCustomerGain) ||
-          (sourceIsMsg && targetIsGainCreator)
-        );
-      });
+          const source = this.nodes.find((n) => n.id === l.source);
+          const target = this.nodes.find((n) => n.id === l.target);
+          const sourceIsPainReliever = source.type === "Pain Reliever";
+          const sourceIsMsg = source.type === "Pain Reliever Message";
+          const targetIsCustomerPain = target.type === "Customer Pain";
+          const targetIsPainReliever = target.type === "Pain Reliever";
+          return (
+            (sourceIsPainReliever && targetIsCustomerPain) ||
+            (sourceIsMsg && targetIsPainReliever)
+          );
+        })
+        .classed("gain-line", (l) => {
+          const source = this.nodes.find((n) => n.id === l.source);
+          const target = this.nodes.find((n) => n.id === l.target);
+          const sourceIsGainCreator = source.type === "Gain Creator";
+          const sourceIsMsg = source.type === "Gain Creator Message";
+          const targetIsCustomerGain = target.type === "Customer Gain";
+          const targetIsGainCreator = target.type === "Gain Creator";
+          return (
+            (sourceIsGainCreator && targetIsCustomerGain) ||
+            (sourceIsMsg && targetIsGainCreator)
+          );
+        });
 
       const _wrapperElements = this._graphContent
         .append("g")
@@ -802,7 +810,7 @@ export default {
           owner: userId,
           published: this.Published,
           created: this.CreatedDT,
-          lastModified: (new Date()).toISOString(),
+          lastModified: new Date().toISOString(),
           data: {
             IdealCustomerProfiles: this.IdealCustomerProfiles,
             CustomerJobs: this.CustomerJobs,
@@ -813,7 +821,7 @@ export default {
             PainRelievers: this.PainRelievers,
             Messages: this.Messages,
           },
-          schemaVersion: "0.0.0"
+          schemaVersion: "0.0.0",
         });
         // inform user
         if (!this.routePropositionId) {
