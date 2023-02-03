@@ -47,7 +47,14 @@
           {{ Name }}
         </h2>
         <div class="d-flex flex-row justify-content-end">
-          <b-badge class="mr-2" variant="secondary" href="#" @click="save" v-if="!isOwner && !routePropositionId">Unsaved</b-badge>
+          <b-badge
+            class="mr-2"
+            variant="secondary"
+            href="#"
+            @click="save"
+            v-if="!isOwner && !routePropositionId"
+            >Unsaved</b-badge
+          >
           <b-badge variant="secondary" href="#" @click="publish">{{
             Published ? "Published" : "Unpublished"
           }}</b-badge>
