@@ -24,7 +24,7 @@
         </template>
       </b-card>
     </div>
-    <div v-else class="my-3 d-flex flex-row" style="gap: 1rem">
+    <div v-else class="my-3 d-flex flex-row flex-wrap" style="gap: 3rem">
       <b-card class="proposition-item" bg-variant="dark" text-variant="white">
         <h2 class="text-white user-select-none">
           Create a New Value Proposition
